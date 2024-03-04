@@ -260,17 +260,39 @@
           <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
             <li class="dropdown active">
-              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>UMKM</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="index-0.html">General Dashboard</a></li>
-                <li class=active><a class="nav-link" href="index.html">Ecommerce Dashboard</a></li>
+                <li><a class="nav-link" href="/umkmDanSkor">UMKM & Skor</a></li>
+                <li class=active><a class="nav-link" href="/umkmQualified">UMKM Qualified</a></li>
               </ul>
             </li>
-            <li><a class="nav-link" href="/1">1</a></li>
+            <li class="dropdown active">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Pemrograman</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="/dashboardPemrograman">Dashboard</a></li>
+                <li class=active><a class="nav-link" href="/pemrogramanUmkmDanSkor">UMKM & Skor</a></li>
+              </ul>
+            </li>
+            <li class="dropdown active">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Management</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="/kuisionerUmkm">Kuisioner UMKM</a></li>
+                <li><a class="nav-link" href="/kuisionerPemrograman">Kuisioner Pemrograman</a></li>
+              </ul>
+            </li>
+            <li class="dropdown active">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Setting</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="/kuisionerSkor"> Kuisioner Skor</a></li>
+                <li><a class="nav-link" href="/settingKuisionerPemrograman"> Kuisioner Pemrograman</a></li>
+                <li><a class="nav-link" href="/settingQualifiedUmkm"> Qualified UMKM</a></li>
+              </ul>
+            </li>
+            {{-- <li><a class="nav-link" href="/1">1</a></li>
             <li><a class="nav-link" href="/2">2</a></li>
             <li><a class="nav-link" href="/3">3</a></li>
             <li><a class="nav-link" href="/4">4</a></li>
-            <li><a class="nav-link" href="/5">5</a></li>
+            <li><a class="nav-link" href="/5">5</a></li> --}}
           </ul>
 
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
@@ -287,11 +309,11 @@
             <div class="col-12">
               <div class="card card-statistic-2" style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;">
                 <div class="card-stats">
-                  <div class="card-stats-title" style="padding: 5px;"></div>
+                  <div class="card-stats-title" style="padding:5px;"></div>
                   <div class="card-stats-items px-3">
                     <h5 class="mb-0">@yield('title')</h5>
                   </div>
-                  <div class="card-stats-title" style="padding: 5px;"></div>
+                  <div class="card-stats-title" style="padding:5px;"></div>
                 </div>
               </div>
             </div>

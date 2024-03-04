@@ -14,8 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () { return view('index'); });
-Route::get('/1', function () { return view('1.1'); });
-Route::get('/2', function () { return view('2.2'); });
-Route::get('/3', function () { return view('3.3'); });
-Route::get('/4', function () { return view('4.4'); });
-Route::get('/5', function () { return view('5.5'); });
+
+Route::get('/umkmDanSkor', function () { return view('UMKM.umkmDanSkor'); });
+Route::get('/umkmQualified', function () { return view('UMKM.umkmQualified'); });
+
+Route::get('/dashboardPemrograman', function () { return view('Pemrograman.dashboardPemrograman'); });
+Route::get('/pemrogramanUmkmDanSkor', function () { return view('Pemrograman.umkmDanSkor'); });
+
+Route::get('/kuisionerPemrograman', function () { return view('Management.kuisionerPemrograman'); });
+Route::get('/kuisionerSkor', function () { return view('Management.kuisionerSkor'); });
+Route::get('/kuisionerUmkm', function () { return view('Management.kuisionerUmkm'); });
+Route::get('/settingKuisionerPemrograman', function () { return view('Management.settingKuisionerPemrograman'); });
+Route::get('/settingQualifiedUmkm', function () { return view('Management.settingQualifiedUmkm'); });
+
