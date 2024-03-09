@@ -260,32 +260,36 @@
           <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
             <li class="dropdown active">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Settings</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="/kuisioner">Kuisioner</a></li>
+                <li class=active><a class="nav-link" href="/kuisionerskor">Kuisioner Skor</a></li>
+                <li class=active><a class="nav-link" href="/kuisionerkurasi">Kuisioner Kurasi</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
               <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>UMKM</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="/umkmDanSkor">UMKM & Skor</a></li>
-                <li class=active><a class="nav-link" href="/umkmQualified">UMKM Qualified</a></li>
+                <li><a class="nav-link" href="/umkmregistered">UMKM Registered</a></li>
+                <li class=active><a class="nav-link" href="/umkmqualified">UMKM Qualified</a></li>
+                <li class=active><a class="nav-link" href="/umkmunqualified">UMKM UnQualified</a></li>
+                <li class=active><a class="nav-link" href="/umkmverified">UMKM Verified</a></li>
               </ul>
             </li>
             <li class="dropdown active">
-              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Pemrograman</span></a>
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Kurasi UMKM</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="/dashboardPemrograman">Dashboard</a></li>
-                <li class=active><a class="nav-link" href="/pemrogramanUmkmDanSkor">UMKM & Skor</a></li>
+                <li><a class="nav-link" href="/umkmqualified">UMKM Qualified</a></li>
+                <li><a class="nav-link" href="/umkmassesment">UMKM Assesment</a></li>
               </ul>
             </li>
             <li class="dropdown active">
-              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Management</span></a>
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Management Akun</span></a>
               <ul class="dropdown-menu">
-                <li><a class="nav-link" href="/kuisionerUmkm">Kuisioner UMKM</a></li>
-                <li><a class="nav-link" href="/kuisionerPemrograman">Kuisioner Pemrograman</a></li>
-              </ul>
-            </li>
-            <li class="dropdown active">
-              <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Setting</span></a>
-              <ul class="dropdown-menu">
-                <li><a class="nav-link" href="/kuisionerSkor"> Kuisioner Skor</a></li>
-                <li><a class="nav-link" href="/settingKuisionerPemrograman"> Kuisioner Pemrograman</a></li>
-                <li><a class="nav-link" href="/settingQualifiedUmkm"> Qualified UMKM</a></li>
+                <li><a class="nav-link" href="/admin">Admin</a></li>
+                <li><a class="nav-link" href="/penyedia"> Penyedia</a></li>
+                <li><a class="nav-link" href="/kurator"> Kurator</a></li>
+                <li><a class="nav-link" href="/umkm"> UMKM</a></li>
               </ul>
             </li>
             {{-- <li><a class="nav-link" href="/1">1</a></li>

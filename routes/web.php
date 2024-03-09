@@ -15,15 +15,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () { return view('index'); });
 
-Route::get('/umkmDanSkor', function () { return view('UMKM.umkmDanSkor'); });
-Route::get('/umkmQualified', function () { return view('UMKM.umkmQualified'); });
+Route::get('/kuisioner', function () { return view('Setting.kuisioner'); });
+Route::get('/kuisionerskor', function () { return view('Setting.kuisionerskor'); });
+Route::get('/kuisionerkurasi', function () { return view('Setting.kuisionerkurasi'); });
 
-Route::get('/dashboardPemrograman', function () { return view('Pemrograman.dashboardPemrograman'); });
-Route::get('/pemrogramanUmkmDanSkor', function () { return view('Pemrograman.umkmDanSkor'); });
+Route::get('/umkmqualified', function () { return view('Kurasi.umkmqualified'); });
+Route::get('/umkmassesment', function () { return view('Kurasi.umkmassesment'); });
 
-Route::get('/kuisionerPemrograman', function () { return view('Management.kuisionerPemrograman'); });
-Route::get('/kuisionerSkor', function () { return view('Management.kuisionerSkor'); });
-Route::get('/kuisionerUmkm', function () { return view('Management.kuisionerUmkm'); });
-Route::get('/settingKuisionerPemrograman', function () { return view('Management.settingKuisionerPemrograman'); });
-Route::get('/settingQualifiedUmkm', function () { return view('Management.settingQualifiedUmkm'); });
+Route::get('/admin', function () { return view('Akun.admin'); });
+Route::get('/kurator', function () { return view('Akun.kurator'); });
+Route::get('/penyedia', function () { return view('Akun.penyedia'); });
+Route::get('/umkm', function () { return view('Akun.umkm'); });
+
+Route::get('/umkmregistered', function () { return view('Umkm.umkmregistered'); });
+Route::get('/umkmqualified', function () { return view('Umkm.umkmqualified'); });
+Route::get('/umkmunqualified', function () { return view('Umkm.umkmunqualified'); });
+Route::get('/umkmverified', function () { return view('Umkm.umkmverified'); });
+
 

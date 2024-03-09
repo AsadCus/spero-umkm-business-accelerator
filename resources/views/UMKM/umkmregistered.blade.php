@@ -1,6 +1,6 @@
 @extends('index')
 
-@section('title', 'UMKM Qualified')
+@section('title', 'UMKM Registered')
 
 @section('content')
     {{-- <table class="table">
@@ -62,7 +62,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>75</td>
-                    <td><a type="button" target="_blank" href="verif-page/3/Tm92aWNl" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/3/Tm92aWNl" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="even">
                     <td class="sorting_1">4</td>
                     <td>Marimari_Shop</td>
@@ -72,7 +72,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>80</td>
-                    <td><a type="button" target="_blank" href="verif-page/4/T2JzZXJ2ZXI%3D" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/4/T2JzZXJ2ZXI%3D" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="odd">
                     <td class="sorting_1">5</td>
                     <td>Deng Cell</td>
@@ -82,7 +82,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>75</td>
-                    <td><a type="button" target="_blank" href="verif-page/5/Tm92aWNl" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/5/Tm92aWNl" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="even">
                     <td class="sorting_1">6</td>
                     <td>ZEP Design</td>
@@ -92,7 +92,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>75</td>
-                    <td><a type="button" target="_blank" href="verif-page/6/Tm92aWNl" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/6/Tm92aWNl" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="odd">
                     <td class="sorting_1">7</td>
                     <td>Rock N Roast</td>
@@ -102,7 +102,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>75</td>
-                    <td><a type="button" target="_blank" href="verif-page/7/Tm92aWNl" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/7/Tm92aWNl" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="even">
                     <td class="sorting_1">8</td>
                     <td>Toko Proton</td>
@@ -112,7 +112,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>95</td>
-                    <td><a type="button" target="_blank" href="verif-page/8/TGVhZGVy" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/8/TGVhZGVy" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="odd">
                     <td class="sorting_1">9</td>
                     <td>Kacang Bawang Goreng Bu Erna</td>
@@ -122,7 +122,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>80</td>
-                    <td><a type="button" target="_blank" href="verif-page/9/T2JzZXJ2ZXI%3D" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/9/T2JzZXJ2ZXI%3D" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="even">
                     <td class="sorting_1">10</td>
                     <td>Toko Himawari</td>
@@ -142,7 +142,7 @@
                     <td><span class="badge badge-dark"><i class="fa fa-desktop"></i> App</span></td>
                     
                     <td>50</td>
-                    <td><a type="button" target="_blank" href="verif-page/11/QmVnaW5uZXI%3D" class="btn btn-sm btn-danger"><i class="fa fa-sign-in"></i> UnQualified</a> </td>
+                    <td><a type="button" target="_blank" href="verif-page/11/QmVnaW5uZXI%3D" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a> </td>
                   </tr><tr role="row" class="even">
                     <td class="sorting_1">12</td>
                     <td>Delisha</td>
