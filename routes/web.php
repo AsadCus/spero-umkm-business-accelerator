@@ -18,6 +18,7 @@ Route::get('/', function () { return view('index'); });
 Route::get('/kuisioner', function () { return view('Setting.kuisioner'); });
 Route::get('/kuisionerskor', function () { return view('Setting.kuisionerskor'); });
 Route::get('/kuisionerkurasi', function () { return view('Setting.kuisionerkurasi'); });
+Route::get('/tambahkuisionerkurasi', function () { return view('Setting.tambahkuisionerkurasi'); });
 
 Route::get('/umkmqualified', function () { return view('Kurasi.umkmqualified'); });
 Route::get('/umkmassesment', function () { return view('Kurasi.umkmassesment'); });

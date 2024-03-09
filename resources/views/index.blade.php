@@ -267,7 +267,7 @@
                 <li class=active><a class="nav-link" href="/kuisionerkurasi">Kuisioner Kurasi</a></li>
               </ul>
             </li>
-            <li class="dropdown">
+            <li class="dropdown active">
               <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>UMKM</span></a>
               <ul class="dropdown-menu">
                 <li><a class="nav-link" href="/umkmregistered">UMKM Registered</a></li>

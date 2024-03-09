@@ -23,6 +23,9 @@
     </table> --}}
 
   <div class="row"><div class="col-sm-12"><table class="table table-striped dataTable no-footer" id="table-1" role="grid" aria-describedby="table-1_info">
+    <div class="d-flex justify-content-end">
+        <a href="/tambahkuisionerkurasi" class="btn btn-icon icon-left btn-primary my-2"><i class="far fa-edit"></i> Tambah</a>
+    </div>
     <thead>                                 
     <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="table-1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="
           #
@@ -49,7 +52,7 @@
         <td>
           <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="tooltip" title="" data-original-title="Wildan Ahdian">
         </td> --}}
-        <td>Jenis Jawaban</td>
+        <td>Soal Relasi</td>
         <td>
             <div class="btn-group mb-2">
                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
