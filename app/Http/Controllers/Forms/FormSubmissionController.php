@@ -26,13 +26,14 @@ class FormSubmissionController extends Controller
         $this->authorize('view', $form);
 
         // DB::enableQueryLog();
-        return 
-        FormSubmissionResource::collection(
-            $form->submissions()
-            ->join('users', 'users.id', '=', 'form_submissions.id_user')
-            ->select('form_submissions.*', 'users.name')
-            ->where('users.aktif', 1)
-            ->paginate(100));
+        return
+            FormSubmissionResource::collection(
+                $form->submissions()
+                    ->join('users', 'users.id', '=', 'form_submissions.id_user')
+                    ->select('form_submissions.*', 'users.name')
+                    ->where('users.aktif', 1)
+                    ->paginate(100)
+            );
         // dd(DB::getQueryLog());
     }
 
@@ -54,7 +55,7 @@ class FormSubmissionController extends Controller
         $csvExport = (new FormSubmissionExport($allRows));
         return Excel::download(
             $csvExport,
-            $form->slug.'-submission-data.csv',
+            $form->slug . '-submission-data.csv',
             \Maatwebsite\Excel\Excel::CSV
         );
     }
@@ -64,8 +65,8 @@ class FormSubmissionController extends Controller
         // $form = Form::findOrFail((int) $id);
         // $this->authorize('view', $form);
 
-        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id).'/'
-            .urldecode($fileName);
+        $fileName = Str::of(PublicFormController::FILE_UPLOAD_PATH)->replace('?', $id) . '/'
+            . urldecode($fileName);
 
         if (!Storage::disk('s3')->exists($fileName)) {
             return $this->error([

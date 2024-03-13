@@ -4,6 +4,7 @@ namespace App\Models\Forms;
 
 use App\Events\Models\FormCreated;
 use App\Models\Integration\FormZapierWebhook;
+use App\Models\Score;
 use App\Models\User;
 use App\Models\Workspace;
 use Database\Factories\FormFactory;
@@ -239,6 +240,11 @@ class Form extends Model
     public function zappierHooks()
     {
         return $this->hasMany(FormZapierWebhook::class);
+    }
+
+    public function score()
+    {
+        return $this->hasOne(Score::class);
     }
 
     /**
