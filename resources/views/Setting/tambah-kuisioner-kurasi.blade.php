@@ -3,7 +3,6 @@
 @section('title', 'Tambah Kuisioner Kurasi')
 
 @section('content')
-
 <div class="form-group">
     <label>Pilih Soal Kuisioner</label>
     <select class="form-control">
@@ -21,6 +20,4 @@
   <div class="d-flex justify-content-end">
     <a href="/kuisionerkurasi" class="btn btn-primary">Simpan</a>
   </div>
-
-
 @endsection

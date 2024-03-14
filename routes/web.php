@@ -15,22 +15,23 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () { return view('index'); });
 
-Route::get('/kuisioner', function () { return view('Setting.kuisioner'); });
-Route::get('/kuisionerskor', function () { return view('Setting.kuisionerskor'); });
-Route::get('/kuisionerkurasi', function () { return view('Setting.kuisionerkurasi'); });
-Route::get('/tambahkuisionerkurasi', function () { return view('Setting.tambahkuisionerkurasi'); });
+Route::get('/kuisioner', function () { return view('setting.kuisioner'); });
+Route::get('/kuisioner-skor', function () { return view('setting.kuisioner-skor'); });
+Route::get('/show/kuisioner-soal', function () { return view('setting.kuisioner-soal'); });
+Route::get('/kuisioner-kurasi', function () { return view('setting.kuisioner-kurasi'); });
+Route::get('/tambah-kuisioner-kurasi', function () { return view('setting.tambah-kuisioner-kurasi'); });
 
-Route::get('/umkmqualified', function () { return view('Kurasi.umkmqualified'); });
-Route::get('/umkmassesment', function () { return view('Kurasi.umkmassesment'); });
+Route::get('/umkm-qualified', function () { return view('kurasi.qualified'); });
+Route::get('/umkm-assesment', function () { return view('kurasi.assesment'); });
 
-Route::get('/admin', function () { return view('Akun.admin'); });
-Route::get('/kurator', function () { return view('Akun.kurator'); });
-Route::get('/penyedia', function () { return view('Akun.penyedia'); });
-Route::get('/umkm', function () { return view('Akun.umkm'); });
+Route::get('/admin', function () { return view('akun.admin'); });
+Route::get('/kurator', function () { return view('akun.kurator'); });
+Route::get('/penyedia', function () { return view('akun.penyedia'); });
+Route::get('/umkm', function () { return view('akun.umkm'); });
 
-Route::get('/umkmregistered', function () { return view('Umkm.umkmregistered'); });
-Route::get('/umkmqualified', function () { return view('Umkm.umkmqualified'); });
-Route::get('/umkmunqualified', function () { return view('Umkm.umkmunqualified'); });
-Route::get('/umkmverified', function () { return view('Umkm.umkmverified'); });
+Route::get('/umkm-registered', function () { return view('umkm.registered'); });
+Route::get('/umkm-qualified', function () { return view('umkm.qualified'); });
+Route::get('/umkm-unqualified', function () { return view('umkm.unqualified'); });
+Route::get('/umkm-verified', function () { return view('umkm.verified'); });
 
 

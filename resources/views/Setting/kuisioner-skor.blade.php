@@ -1,6 +1,6 @@
 @extends('index')
 
-@section('title', 'Kuisioner')
+@section('title', 'Kuisioner Skor')
 
 @section('content')
     <div class="row">
@@ -15,13 +15,12 @@
                             No
                         </th>
                         <th class="sorting" tabindex="0" aria-controls="table-1" rowspan="1" colspan="1"
-                            aria-label="Task Name: activate to sort column ascending" style="width: 149.078px;">Nama</th>
-                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Progress"
-                            style="width: 78.7344px;">Status</th>
-                        {{-- <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Progress"
-                            style="width: 78.7344px;">Jenis Jawaban</th>
+                            aria-label="Task Name: activate to sort column ascending" style="width:208.203px;">Kuisioner
+                        </th>
                         <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Members"
-                            style="width: 208.203px;">Jawaban</th> --}}
+                            style="width: 78.7344px;">Status</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Members"
+                            style="width: 78.7344px;">Limit Skor</th>
                         <th class="sorting" tabindex="0" aria-controls="table-1" rowspan="1" colspan="1"
                             aria-label="Due Date: activate to sort column ascending" style="width: 89.0938px;">Aksi</th>
                     </tr>
@@ -30,12 +29,11 @@
 
                     <tr role="row" class="odd">
                         <td class="text-center">1</td>
-                        <td>Kuesioner UMKM</td>
+                        <td>Kuisioner UMKM</td>
                         <td>
                             <div class="badge badge-success">Publish</div>
                         </td>
-                        {{-- <td>Jenis Jawaban</td>
-                        <td>Jawaban</td> --}}
+                        <td contenteditable="true" class="editable">100</td>
                         <td>
                             <div class="btn-group mb-2">
                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
@@ -43,9 +41,9 @@
                                     Aksi
                                 </button>
                                 <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/show/kuisioner-soal">Show</a>
                                     <a class="dropdown-item" href="#">Publish</a>
                                     <a class="dropdown-item" href="#">Unpublish</a>
-                                    <a class="dropdown-item" href="/show/kuisioner-soal">Set Skor</a>
                                 </div>
                             </div>
                         </td>
@@ -56,4 +54,15 @@
             </table>
         </div>
     </div>
+
+    <script>
+        function updateRow(button) {
+            var row = button.parentNode.parentNode;
+            var name = row.querySelector('.editable:nth-child(1)').innerText;
+            var email = row.querySelector('.editable:nth-child(2)').innerText;
+            console.log("Nama: " + name + ", Email: " + email);
+            // Di sinilah Anda dapat mengirim data ke backend atau melakukan tindakan lainnya.
+            // Misalnya, Anda bisa menggunakan AJAX untuk mengirim data ke server.
+        }
+    </script>
 @endsection
