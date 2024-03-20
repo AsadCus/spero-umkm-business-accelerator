@@ -10,7 +10,7 @@ class PropertyScore extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $table ='property_scores';
+    protected $table = 'property_scores';
 
     /**
      * Relationships

@@ -39,33 +39,57 @@
                                     <tr>
                                         <th class="text-center" scope="col">#</th>
                                         <th class="text-center" scope="col">Input</th>
+                                        <th class="text-center" scope="col">Parameter</th>
                                         <th class="text-center" scope="col">Score</th>
                                         <th class="text-center" scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($dataPropertyScore) < 0)
-                                        @foreach ($dataPropertyScore as $key => $value)
+                                    @if (count($dataPropertyScore) > 0)
+                                        @foreach ($dataPropertyScore as $keyPropertyScore => $list)
                                             <tr>
-                                                <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">{{ $value['name'] }}</td>
+                                                <td class="text-center">{{ $keyPropertyScore + 1 }}</td>
+                                                <td class="text-center">{{ $list->name }} [{{ $list->type }}]</td>
                                                 <td class="text-center">
-                                                    @if ($value['parameter'] == 'true' || $value['parameter'] == 'false')
-                                                        {{ $value['parameter'] == 'false' ? 'Tidak Terisi' : 'Terisi' }}
+                                                    @if (count($list->logic) > 0)
+                                                        {{ $list->logic[0]->parameter == 'false' ? 'Tidak Terisi' : 'Terisi' }}
                                                     @else
-                                                        {{ $value['parameter'] }}
+                                                        Empty
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (count($list->logic) > 0)
+                                                        @if ($list->type == 'select')
+                                                            <select class="form-control">
+                                                                @foreach ($list->logic as $keyLogic => $listLogic)
+                                                                    <option value="{{ $listLogic->score }}">
+                                                                        {{ $listLogic->name }} - {{ $listLogic->score }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        @else
+                                                            {{ $list->logic[0]->score }}
+                                                        @endif
+                                                    @else
+                                                        Empty
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
                                                     <a class="btn btn-danger text-white delete-logic"
-                                                        data-href="{{ url('/') }}/delete-logic/{{ $data->id }}/{{ $key }}">
+                                                        data-href="{{ url('/') }}/set-score/logic/delete/{{ $list->id }}">
                                                         <i class="fa fa-times"></i> Hapus
                                                     </a>
+                                                    <button type="button" class="btn btn-warning text-white edit-logic"
+                                                        data-toggle="modal" data-target="#editData"
+                                                        data-url={{ route('set-score.logic.edit', $list->id) }}>
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @else
-                                        <tr>
+                                        <tr class="text-center">
+                                            <td colspan="1">#</td>
                                             <td colspan="4">Tidak ada data</td>
                                         </tr>
                                     @endif
@@ -82,7 +106,7 @@
     <!-- Modal -->
     <form action="{{ route('set-score.logic.store') }}" method="POST">
         <div class="modal fade" id="tambahData" data-backdrop="static" role="dialog" data-keyboard="false"
-            aria-labelledby="tambahDataLabel" aria-hidden="true">
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -93,6 +117,7 @@
                     </div>
                     <div class="modal-body pb-0">
                         {{ csrf_field() }}
+                        <input type="hidden" name="id" class="hidden" value="{{ $dataForm->id }}">
                         <div class="mb-3">
                             <label for="input" class="form-label">Input <span
                                     class="text-danger text-bold">*</span></label>
@@ -110,22 +135,66 @@
                             <div id="inputHelp" class="form-text"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="parameter" class="form-label">Parameter Output <span
-                                    class="text-danger text-bold">*</span></label>
+                            <label for="parameter" class="form-label">Parameter Output
+                                <span class="text-danger text-bold">*</span>
+                            </label>
                             <br>
                             Terisi : <input type="radio" class="paramTrig" name="parameter" value="true" required><br>
                             Tidak : <input type="radio" class="paramTrig" name="parameter" value="false">
                             <div id="parameterHelp" class="form-text"></div>
                         </div>
-                        <div class="mb-3" id="valParam" style="display: none">
-                            <label for="parameter" class="form-label">Value Parameter :</label>
-                            <select class="form-control" name="valueParam">
-                                <option value="">-- Pilih --</option>
-                            </select>
-                            <div id="parameterHelp" class="form-text"></div>
+                        <div class="mb-3" id="score">
+                            <label for="scoreInput" class="form-label">Score :</label>
+                            <br>
+                            <div id="scoreInput"></div>
+                            <div id="scoreInputs"></div>
+                            <small id="scoreHelp" class="form-text text-muted">Tidak diisi = 0.</small>
                         </div>
-                        <div class="text-right" style="font-weight:bold"> Note : <span
-                                class="text-danger text-bold">*</span> Wajib Isi</div>
+                        <div class="text-right" style="font-weight:bold"> Note :
+                            <span class="text-danger text-bold">*</span> Wajib Isi
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="modal-footer pt-1 justify-content-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form action="{{ route('set-score.logic.update') }}" method="POST">
+        <div class="modal fade" id="editData" data-backdrop="static" role="dialog" data-keyboard="false"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-5" id="tambahDataLabel">Edit Data Score</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body pb-0">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="id" class="hidden">
+                        <div class="mb-3">
+                            <label for="parameter" class="form-label">Parameter Output
+                                <span class="text-danger text-bold">*</span>
+                            </label>
+                            <br>
+                            Terisi : <input type="radio" class="paramTrig" name="parameter" value="true">
+                            <br>
+                            Tidak : <input type="radio" class="paramTrig" name="parameter" value="false">
+                        </div>
+                        <div class="mb-3" id="score">
+                            <label for="scoreInput" class="form-label">Score :</label>
+                            <br>
+                            <div id="scoreInput"></div>
+                            <div id="scoreInputs"></div>
+                            <small id="scoreHelp" class="form-text text-muted">Tidak diisi = 0.</small>
+                        </div>
+                        <div class="text-right" style="font-weight:bold"> Note :
+                            <span class="text-danger text-bold">*</span> Wajib Isi
+                        </div>
                         <hr />
                     </div>
                     <div class="modal-footer pt-1 justify-content-center">
@@ -138,50 +207,131 @@
 @endsection
 @push('scripts')
     <!-- JS Libraies -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <!-- Page Specific JS File -->
 
     <script>
+        // plugin
+        $(document).ready(function() {
+            $('.select2').select2({
+                // dropdownParent: $('#tambahData')
+            });
+        });
+
+        // data
         const formJson = JSON.parse($("#formJson").val());
-        $(".paramTrig").change(function() { // bind a function to the change event
-            var select = $(".select2 option:selected").text()
-            if (($(this).is(":checked")) && (select.indexOf("[select]") !== -1)) { // check if the radio is checked
-                if ($(this).val() == 'true') {
-                    let arrOption = formJson[$(".select2 option:selected").attr('data-key')]['select']['options'];
-                    $('#valParam select').html('<option value="">-- Pilih Parameter --</option>')
-                    $.each(arrOption, function(index, value) {
-                        $('#valParam select').append('<option value="' + value['id'] + '">' + value[
-                            'name'] + '</option')
+
+        // tambah
+        $("#tambahData .select2").change(function() {
+            var select = $("#tambahData .select2 option:selected").text();
+            var hasSelectCondition = select.indexOf("[select]") !== -1;
+
+            if (hasSelectCondition) {
+                $('#tambahData #scoreInputs').empty();
+                $('#tambahData #scoreInput').empty();
+                let arrOption = formJson[$("#tambahData .select2 option:selected").attr('data-key')]['select'][
+                    'options'
+                ];
+                if (arrOption.length > 0) {
+                    arrOption.forEach(function(option, index) {
+                        let inputHtml =
+                            '<div class="input-group mb-3">' +
+                            '<div class="input-group-prepend">' +
+                            '<span class="input-group-text" id="basic-addon1">' + option.name +
+                            '</span>' +
+                            '</div>' +
+                            '<input type="number" class="form-control" name="score[]">' +
+                            '</div>';
+                        $('#tambahData #scoreInputs').append(inputHtml);
                     });
-                    $('#valParam').attr('style', '')
-                } else {
-                    $('#valParam select').html('<option value="">-- Pilih Parameter --</option>')
-                    $('#valParam select').val('').trigger('change')
-                    $('#valParam').attr('style', 'display:none')
                 }
-            }
-        })
-
-        $(".select2").change(function() {
-            var select = $(".select2 option:selected").text()
-            // console.log((select.indexOf("[select]") !== -1));
-            if (($('.paramTrig:checked').val() == 'true') && (select.indexOf("[select]") !== -
-                    1)) { // check if the radio is checked
-                let arrOption = formJson[$(".select2 option:selected").attr('data-key')]['select']['options'];
-                $('#valParam select').html('<option value="">-- Pilih Parameter --</option>')
-                $.each(arrOption, function(index, value) {
-                    $('#valParam select').append('<option value="' + value['id'] + '">' + value['name'] +
-                        '</option')
-                });
-                $('#valParam').attr('style', '')
             } else {
-                $('#valParam select').html('<option value="">-- Pilih Parameter --</option>')
-                $('#valParam select').val('').trigger('change')
-                $('#valParam').attr('style', 'display:none')
+                $('#tambahData #scoreInputs').empty();
+                $('#tambahData #scoreInput').empty();
+                let inputHtml = '<input type="number" class="form-control" name="score[]">';
+                $('#tambahData #scoreInput').append(inputHtml);
             }
-        })
+        });
 
+        $("#tambahData .select2").change();
+
+        // edit
+        $(document).on("click", ".edit-logic", function() {
+            let url = $(this).data('url');
+            $.get(url, function(data) {
+                var propertyScore = data.data;
+
+                $('#editData input[name="id"]').val(data.data.id);
+
+                propertyScore.logic[0].parameter == 'true' ? document.querySelector(
+                    '#editData .paramTrig[value="true"]').checked = true : document.querySelector(
+                    '#editData .paramTrig[value="false"]').checked = true;
+
+                if (propertyScore.type == 'select') {
+                    $('#editData #scoreInputs').empty();
+                    $('#editData #scoreInput').empty();
+                    propertyScore.logic.forEach(function(option, index) {
+                        let inputHtml =
+                            '<div class="input-group mb-3">' +
+                            '<div class="input-group-prepend">' +
+                            '<span class="input-group-text" id="basic-addon1">' + option.name +
+                            '</span>' +
+                            '</div>' +
+                            '<input type="number" class="form-control" name="score[]" value="' +
+                            option.score + '">' +
+                            '</div>';
+                        $('#editData #scoreInputs').append(inputHtml);
+                    });
+                } else {
+                    $('#editData #scoreInputs').empty();
+                    $('#editData #scoreInput').empty();
+                    let inputHtml =
+                        '<input type="number" class="form-control" name="score[]" value="' +
+                        propertyScore.logic[0].score + '">';
+                    $('#editData #scoreInput').append(inputHtml);
+                }
+            })
+        });
+
+        $("#editData .paramTrig").change(function() {
+            let id = $('#editData input[name="id"]').val();
+            let url = '/set-score/logic/edit/' + id;
+            var isChecked = $('#editData .paramTrig:checked').val() == 'true';
+
+            $.get(url, function(data) {
+                var propertyScore = data.data;
+                var hasSelectCondition = propertyScore.type == 'select';
+
+                if (hasSelectCondition) {
+                    $('#editData #scoreInputs').empty();
+                    $('#editData #scoreInput').empty();
+                    propertyScore.logic.forEach(function(option, index) {
+                        let inputHtml =
+                            '<div class="input-group mb-3">' +
+                            '<div class="input-group-prepend">' +
+                            '<span class="input-group-text" id="basic-addon1">' + option.name +
+                            '</span>' +
+                            '</div>' +
+                            '<input type="number" class="form-control" name="score[]" value="' +
+                            option.score + '">' +
+                            '</div>';
+                        $('#editData #scoreInputs').append(inputHtml);
+                    });
+                } else {
+                    $('#editData #scoreInputs').empty();
+                    $('#editData #scoreInput').empty();
+                    let inputHtml =
+                        '<input type="number" class="form-control" name="score[]" value="' +
+                        propertyScore.logic[0].score + '">';
+                    $('#tambahData #scoreInput').append(inputHtml);
+                }
+            })
+        });
+
+        $("#editData paramTrig").change();
+
+        // hapus
         $(document).on("click", ".delete-logic", function() {
             let href = $(this).attr('data-href');
             Swal.fire({
@@ -191,7 +341,6 @@
                 confirmButtonText: 'Iya',
                 denyButtonText: `Tidak, kembali`,
             }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     Swal.fire('Terhapus!', '', 'success')
                     window.location.replace(href);
@@ -200,13 +349,5 @@
                 }
             })
         });
-
-        $(document).ready(function() {
-            $('.select2').select2({
-                // dropdownParent: $('#tambahData')
-            });
-        });
     </script>
-
-    <!-- Page Specific JS File -->
 @endpush

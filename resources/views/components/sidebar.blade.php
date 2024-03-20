@@ -15,7 +15,6 @@
                 </li>
             @else
             @endif
-
             @if (Session::get('id_role') == 4 or Session::get('id_role') == 3 or Session::get('id_role') == 2)
                 <li class="menu-header">Kuesioner</li>
                 <li class="{{ Request::is('kuesioner-all') ? 'active' : '' }}">

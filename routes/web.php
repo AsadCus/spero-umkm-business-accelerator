@@ -52,9 +52,11 @@ Route::controller(SetScoreController::class)->prefix('/set-score')->name('set-sc
     Route::post('/store', 'store')->name('store');
     Route::post('/update/{id}', 'update')->name('update');
     Route::get('/delete/{id}', 'delete')->name('delete');
-    Route::prefix('/logic')->name('logic.')->group(function(){
-        Route::post('/store', 'storeLogic')->name('store');
-        Route::get('/delete', 'deleteLogic')->name('delete');
+    Route::prefix('/logic')->name('logic.')->group(function () {
+        Route::get('/edit/{id}', 'editScoreLogic')->name('edit');
+        Route::post('/store', 'storeScoreLogic')->name('store');
+        Route::post('/update', 'updateScoreLogic')->name('update');
+        Route::get('/delete/{id}', 'deleteScoreLogic')->name('delete');
     });
 });
 

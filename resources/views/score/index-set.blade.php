@@ -49,7 +49,7 @@
                                             <td class="text-center">{{ $listData->max_score }}</td>
                                             <td class="text-center">
                                                 <a class="btn btn-dark btn-sm"
-                                                    href="set-score/show/{{ $listData->form->id }}">
+                                                    href="set-score/show/{{ $listData->id }}">
                                                     <i class="fa fa-search"></i> Show
                                                 </a>
                                                 &nbsp;
@@ -124,36 +124,37 @@
             </div>
         </div>
     </form>
-    <form action="set-score/update/{{ $listData->id }}" method="POST">
-        <div class="modal fade" id="editData" aria-labelledby="editData" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editDataLabel">Edit Data Score</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body pb-0">
-                        {{ csrf_field() }}
-                        <div class="mb-3">
-                            <label for="max-score" class="form-label">
-                                Max Score
-                                <span class="text-danger text-bold">*</span>
-                            </label>
-                            <input type="number" class="form-control" id="max-score" name="max_score"
-                                aria-describedby="scoreHelp" value="" required>
+    @if (count($data) > 0)
+        <form action="set-score/update/{{ $listData->id }}" method="POST">
+            <div class="modal fade" id="editData" aria-labelledby="editData" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editDataLabel">Edit Data Score</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <hr />
-                    </div>
-                    <div class="modal-footer pt-1 justify-content-center">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="modal-body pb-0">
+                            {{ csrf_field() }}
+                            <div class="mb-3">
+                                <label for="max-score" class="form-label">
+                                    Max Score
+                                    <span class="text-danger text-bold">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="max-score" name="max_score"
+                                    aria-describedby="scoreHelp" value="" required>
+                            </div>
+                            <hr />
+                        </div>
+                        <div class="modal-footer pt-1 justify-content-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
-
+        </form>
+    @endif
 @endsection
 
 @push('scripts')

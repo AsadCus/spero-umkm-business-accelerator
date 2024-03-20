@@ -24,7 +24,16 @@ class SetScoreController extends Controller
     public function index()
     {
         $d['data'] =  $this->score->where('status', 1)->get();
-        $d['forms'] =  $this->form->whereNull('deleted_at')->whereDoesntHave('score')->get();
+        $d['forms'] =  $this->form->whereNull('deleted_at')->where(function ($q) {
+            $q->orWhereDoesntHave('score')->orWhereHas('score', function ($q) {
+                $q->where('status', 0);
+            });
+        })->get();
+
+        // foreach ($this->score->get() as $keyForm => $listForm) {
+        //     $tes[] = $listForm->propertyScores;
+        // }
+        // dd($tes);
 
         return view('score.index-set', $d);
     }
@@ -42,50 +51,28 @@ class SetScoreController extends Controller
 
     public function show($id = null)
     {
-        if ($id == null) {
+        $score = $this->score->find($id);
+        if ($id =! null || $score == null) {
             return view('404');
         }
 
-        $d['dataForm'] = DB::table('forms')->where('id', $id)->first();
-        $d['dataPropertyScore'] = $this->propertyScore->where('score_id', $d['dataForm']->id)->get();
+        $d['dataForm'] = DB::table('forms')->where('id', $score->form_id)->first();
+        $dataPropertyScore = $this->propertyScore->where('score_id', $id)->pluck('property_id')->toArray();
+        $d['dataPropertyScore'] = $this->propertyScore->where('score_id', $id)->get();
+        $d['dataPropertyScore']->map(function ($q) {
+            $q->logic = json_decode($q->logic);
+            return $q;
+        });
         $d['dataJson'] = json_decode($d['dataForm']->properties, true);
+
+        foreach ($d['dataJson'] as $key => $value) {
+            if (in_array($value['id'], $dataPropertyScore)) {
+                unset($d['dataJson'][$key]);
+            }
+        }
 
         return view('score.properties', $d);
     }
-
-    public function addLogic(request $request)
-    {
-        // dd($request);
-        $logic = json_decode(DB::table('m_logic_level')->where('id', $request->id)->first()->logic, true);
-        $count = count($logic);
-        $data_json = json_decode($request->forms, true);
-        $key = array_search($request->input, array_column($data_json, 'id'));
-        $logic[$count]['input_id'] = $request->input;
-        $logic[$count]['name'] = $data_json[$key]['name'] . ' [' . $data_json[$key]['type'] . ']';
-        $logic[$count]['parameter'] = $request->parameter;
-        if ($request->valueParam != '') {
-            $logic[$count]['val-param'] = $request->valueParam;
-        }
-
-        $logic = json_encode($logic);
-
-        DB::table('m_logic_level')->where('id', $request->id)
-            ->update([
-                'logic' => $logic
-            ]);
-        return redirect('set-logic/' . $request->id);
-    }
-
-    // public function edit($id = null)
-    // {
-    //     if ($id == null) {
-    //         return view('404');
-    //     }
-
-    //     $d['data'] =  $this->score->find($id);
-
-    //     return view('score.edit-set', $d);
-    // }
 
     public function update(Request $request, $id)
     {
@@ -99,7 +86,6 @@ class SetScoreController extends Controller
 
     public function delete($id = null)
     {
-        dd($id);
         if ($id == null) {
             return view('404');
         }
@@ -111,5 +97,93 @@ class SetScoreController extends Controller
             ]);
 
         return redirect('set-score');
+    }
+
+    // propertyscore
+    public function storeScoreLogic(request $request)
+    {
+        $dataJson = json_decode($request->forms, true);
+        $key = array_search($request->input, array_column($dataJson, 'id'));
+        $defaultLogic = json_encode([]);
+        $form = $this->form->find($request->id);
+        // dd($form->score);
+        $propertyScore = $this->propertyScore->create([
+            'name' => $dataJson[$key]['name'],
+            'type' => $dataJson[$key]['type'],
+            'score_id' => $request->id,
+            'property_id' => $request->input,
+            'logic' => $defaultLogic,
+        ]);
+
+        $logic = json_decode(DB::table('property_scores')->where('id', $propertyScore->id)->first()->logic, true);
+
+        foreach ($request->score as $keyScore => $listScore) {
+            if ($dataJson[$key]['type'] == 'select') {
+                $logic[$keyScore]['name'] = $dataJson[$key]['select']['options'][$keyScore]['name'];
+            }
+            $logic[$keyScore]['parameter'] = $request->parameter;
+            if ($listScore != '' || $listScore != null) {
+                $logic[$keyScore]['score'] = $listScore;
+            } else {
+                $logic[$keyScore]['score'] = '0';
+            }
+        }
+
+        $logic = json_encode($logic);
+        $storeLogic = $this->propertyScore->find($propertyScore->id);
+        $storeLogic->logic = $logic;
+        $storeLogic->save();
+
+        return redirect()->back();
+    }
+
+    public function updateScoreLogic(request $request)
+    {
+        $propertyScore = $this->propertyScore->find($request->id);
+        $form = $this->form->find($propertyScore->score->form_id);
+        $dataJson = $form->properties;
+        $key = array_search($propertyScore->property_id, array_column($dataJson, 'id'));
+
+        $propertyScore->logic = json_encode([]);
+        $propertyScore->save();
+        $logic = json_decode($propertyScore->logic, true);
+
+        foreach ($request->score as $keyScore => $listScore) {
+            if ($dataJson[$key]['type'] == 'select') {
+                $logic[$keyScore]['name'] = $dataJson[$key]['select']['options'][$keyScore]['name'];
+            }
+            $logic[$keyScore]['parameter'] = $request->parameter;
+            if ($listScore != '' || $listScore != null) {
+                $logic[$keyScore]['score'] = $listScore;
+            } else {
+                $logic[$keyScore]['score'] = '0';
+            }
+        }
+
+        $logic = json_encode($logic);
+        $propertyScore->logic = $logic;
+        $propertyScore->save();
+
+        return redirect()->back();
+    }
+
+    public function editScoreLogic($id = null)
+    {
+        $data = $this->propertyScore->where('id', $id)->first();
+        $data->logic = json_decode($data->logic);
+
+        return response()->json(['message' => 'success', 'data' => $data], 200);
+    }
+
+    public function deleteScoreLogic($id = null)
+    {
+        if ($id == null) {
+            return view('404');
+        }
+
+        $data = $this->propertyScore->find($id);
+        $data->delete();
+
+        return redirect()->back();
     }
 }

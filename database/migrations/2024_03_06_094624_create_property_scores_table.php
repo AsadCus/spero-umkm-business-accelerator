@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('property_scores', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('score_id');
-            $table->unsignedBigInteger('property_id');
-            $table->string('logic');
+            $table->string('property_id');
+            $table->string('type');
+            $table->longText('logic');
             $table->timestamps();
         });
     }
