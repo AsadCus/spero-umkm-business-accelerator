@@ -320,27 +320,21 @@
                             </ul>
                         </li>
                         <li
-                            class="dropdown {{ Request::is('admin') || Request::is('penyedia') || Request::is('kurator') || Request::is('umkm') ? 'active' : '' }}">
+                            class="dropdown {{ Request::is('user/admin') || Request::is('user/penyedia') || Request::is('user/kurator') || Request::is('user/umkm') ? 'active' : '' }}">
                             <a href="#" class="nav-link has-dropdown"><i
                                     class="fas fa-fire"></i><span>Management Akun</span></a>
                             <ul class="dropdown-menu">
-                                <li class="{{ Request::is('admin') ? 'active' : '' }}"><a class="nav-link"
-                                        href="/admin">Admin</a></li>
-                                <li class="{{ Request::is('penyedia') ? 'active' : '' }}"><a class="nav-link"
-                                        href="/penyedia"> Penyedia</a></li>
-                                <li class="{{ Request::is('kurator') ? 'active' : '' }}"><a class="nav-link"
-                                        href="/kurator"> Kurator</a></li>
-                                <li class="{{ Request::is('umkm') ? 'active' : '' }}"><a class="nav-link"
-                                        href="/umkm"> UMKM</a></li>
+                                <li class="{{ Request::is('user/admin') ? 'active' : '' }}"><a class="nav-link"
+                                        href="/user/admin">Admin</a></li>
+                                <li class="{{ Request::is('user/penyedia') ? 'active' : '' }}"><a class="nav-link"
+                                        href="/user/penyedia"> Penyedia</a></li>
+                                <li class="{{ Request::is('user/kurator') ? 'active' : '' }}"><a class="nav-link"
+                                        href="/user/kurator"> Kurator</a></li>
+                                <li class="{{ Request::is('user/umkm') ? 'active' : '' }}"><a class="nav-link"
+                                        href="/user/umkm"> UMKM</a></li>
                             </ul>
                         </li>
-                        {{-- <li><a class="nav-link" href="/1">1</a></li>
-            <li><a class="nav-link" href="/2">2</a></li>
-            <li><a class="nav-link" href="/3">3</a></li>
-            <li><a class="nav-link" href="/4">4</a></li>
-            <li><a class="nav-link" href="/5">5</a></li> --}}
                     </ul>
-
                     <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
                         <a href="https://getstisla.com/docs" class="btn btn-primary btn-lg btn-block btn-icon-split">
                             <i class="fas fa-rocket"></i> Documentation
@@ -369,14 +363,15 @@
                     @yield('content')
                 </section>
             </div>
-            {{-- <footer class="main-footer">
-        <div class="footer-left">
-          Copyright &copy; 2018 <div class="bullet"></div> Design By <a href="https://nauval.in/">Muhamad Nauval Azhar</a>
-        </div>
-        <div class="footer-right">
+            <footer class="main-footer">
+                <div class="footer-left">
+                    Copyright &copy; 2018 <div class="bullet"></div> Design By <a href="https://nauval.in/">Muhamad
+                        Nauval Azhar</a>
+                </div>
+                <div class="footer-right">
 
-        </div>
-      </footer> --}}
+                </div>
+            </footer>
         </div>
     </div>
 
