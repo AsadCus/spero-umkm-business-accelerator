@@ -60,6 +60,21 @@
                             UMKM</a></li>
                 </ul>
             </li>
+            <li
+                class="dropdown {{ Request::is('provinsi') || Request::is('kabupaten') || Request::is('kecamatan') || Request::is('kelurahan') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Management
+                        Wilayah</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{{ Request::is('provinsi') ? 'active' : '' }}"><a class="nav-link"
+                            href="/provinsi">Provinsi</a></li>
+                    <li class="{{ Request::is('kabupaten') ? 'active' : '' }}"><a class="nav-link" href="/kabupaten">
+                            Kabupaten</a></li>
+                    <li class="{{ Request::is('kecamatan') ? 'active' : '' }}"><a class="nav-link" href="/kecamatan">
+                            Kecamatan</a></li>
+                    <li class="{{ Request::is('kelurahan') ? 'active' : '' }}"><a class="nav-link" href="/kelurahan">
+                            Kelurahan</a></li>
+                </ul>
+            </li>
         </ul>
     </aside>
 </div>
