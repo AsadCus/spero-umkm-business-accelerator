@@ -41,7 +41,7 @@ class SetScoreController extends Controller
             'created_at' => date("Y-m-d")
         ]);
 
-        return redirect('set-score');
+        return redirect('kuesioner-skor');
     }
 
     public function show($id = null)
@@ -105,7 +105,7 @@ class SetScoreController extends Controller
             'max_score' => $request->max_score
         ]);
 
-        return redirect('set-score');
+        return redirect('kuesioner-skor');
     }
 
     public function delete($id = null)
@@ -120,7 +120,7 @@ class SetScoreController extends Controller
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
 
-        return redirect('set-score');
+        return redirect('kuesioner-skor');
     }
 
     // propertyscore
@@ -130,11 +130,11 @@ class SetScoreController extends Controller
         $key = array_search($request->input, array_column($dataJson, 'id'));
         $defaultLogic = json_encode([]);
         $form = $this->form->find($request->id);
-        // dd($form->score);
+
         $propertyScore = $this->propertyScore->create([
             'name' => $dataJson[$key]['name'],
             'type' => $dataJson[$key]['type'],
-            'score_id' => $request->id,
+            'score_id' => $form->score->id,
             'property_id' => $request->input,
             'logic' => $defaultLogic,
         ]);

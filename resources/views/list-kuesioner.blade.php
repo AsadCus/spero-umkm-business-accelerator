@@ -45,7 +45,8 @@
                                     <a class="btn btn-warning btn-sm"
                                         href="{{ url('/') }}/kuesioner/{{ $item->id }}">Data Kuesioner <i
                                             class="fa fa-arrow-right"></i></a>
-                                    <a class="btn btn-dark btn-sm" href="{{ url('/set-score/show/' . $item->id) }}">Set
+                                    <a class="btn btn-dark btn-sm"
+                                        href="{{ url('/kuesioner-skor/show/' . $item->score->id) }}">Set
                                         Score <i class="fa fa-arrow-right"></i></a>
                                 </div>
                             </div>

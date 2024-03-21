@@ -46,7 +46,7 @@ Route::controller(ScoreController::class)->prefix('/score')->name('score.')->gro
 });
 
 // setting score
-Route::controller(SetScoreController::class)->prefix('/set-score')->name('set-score.')->group(function () {
+Route::controller(SetScoreController::class)->prefix('/kuesioner-skor')->name('kuesioner-skor.')->group(function () {
     Route::get('/', 'index')->name("index");
     Route::get('/show/{id}', 'show')->name('show');
     Route::post('/store', 'store')->name('store');

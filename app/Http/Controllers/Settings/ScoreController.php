@@ -28,7 +28,7 @@ class ScoreController extends Controller
             'created_at' => date("Y-m-d")
         ]);
 
-        return redirect('set-score');
+        return redirect('kuesioner-skor');
     }
 
     public function delete($id = null)
@@ -44,6 +44,6 @@ class ScoreController extends Controller
                 'updated_at' => date('Y-m-d H:i:s')
             ]);
 
-        return redirect('set-score');
+        return redirect('kuesioner-skor');
     }
 }

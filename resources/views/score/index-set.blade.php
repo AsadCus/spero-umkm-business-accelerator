@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Setting Score')
+@section('title', 'Kuesioner Skor')
 
 @push('style')
     <style>
@@ -19,7 +19,7 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1 style="width:87%">Set Score</h1>
+                <h1 style="width:87%">Kuesioner Skor</h1>
                 <div class="float-right">
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambahData"><i
                             class="fa fa-plus"></i> Tambah Data</button>
@@ -27,8 +27,8 @@
             </div>
 
             <div class="section-body">
-                <h2 class="section-title">List Setting Score</h2>
-                <p class="section-lead">List daftar form yang terdapat sistem score.</p>
+                <h2 class="section-title">List Kuesioner Skor</h2>
+                <p class="section-lead">List daftar kuesioner yang terdapat sistem skor.</p>
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
@@ -37,7 +37,7 @@
                                     <tr>
                                         <th class="text-center" scope="col">#</th>
                                         <th class="text-center" scope="col">Kuesioner</th>
-                                        <th class="text-center" scope="col">Score Limit</th>
+                                        <th class="text-center" scope="col">Skor Limit</th>
                                         <th class="text-center" scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -49,7 +49,7 @@
                                             <td class="text-center">{{ $listData->max_score }}</td>
                                             <td class="text-center">
                                                 <a class="btn btn-dark btn-sm"
-                                                    href="set-score/show/{{ $listData->id }}">
+                                                    href="kuesioner-skor/show/{{ $listData->id }}">
                                                     <i class="fa fa-search"></i> Show
                                                 </a>
                                                 &nbsp;
@@ -60,7 +60,7 @@
                                                 </button>
                                                 &nbsp;
                                                 <button type="button" class="btn btn-danger btn-sm hapus-score"
-                                                    data-href="set-score/delete/{{ $listData->id }}">
+                                                    data-href="kuesioner-skor/delete/{{ $listData->id }}">
                                                     <i class="fa fa-times"></i> Hapus
                                                 </button>
                                             </td>
@@ -81,12 +81,12 @@
 
 
     <!-- Modal -->
-    <form action="set-score/store" method="POST">
+    <form action="kuesioner-skor/store" method="POST">
         <div class="modal fade" id="tambahData" aria-labelledby="tambahData" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="tambahDataLabel">Tambah Data Score</h5>
+                        <h5 class="modal-title" id="tambahDataLabel">Tambah Data Skor</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -109,7 +109,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="score" class="form-label">
-                                Max Score
+                                Max Skor
                                 <span class="text-danger text-bold">*</span>
                             </label>
                             <input type="number" class="form-control" id="score" name="max_score"
@@ -125,7 +125,7 @@
         </div>
     </form>
     @if (count($data) > 0)
-        <form action="set-score/update/{{ $listData->id }}" method="POST">
+        <form action="kuesioner-skor/update/{{ $listData->id }}" method="POST">
             <div class="modal fade" id="editData" aria-labelledby="editData" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -186,7 +186,7 @@
             let id = $(this).data('id');
             let score = $(this).data('score');
             $('#editData').find('#max-score').val(score);
-            $('#editData').find('form').attr('action', 'set-score/update/' + id);
+            $('#editData').find('form').attr('action', 'kuesioner-skor/update/' + id);
         });
     </script>
 @endpush

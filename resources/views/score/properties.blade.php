@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Setting Score ' . $dataForm->title)
+@section('title', 'Setting Skor ' . $dataForm->title)
 
 @push('style')
     <style>
@@ -20,7 +20,7 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1 style="width:87%">Setting Input Score "{{ $dataForm->title }}"</h1>
+                <h1 style="width:87%">Setting Input Skor "{{ $dataForm->title }}"</h1>
                 <div class="float-right">
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambahData">
                         <i class="fa fa-plus"></i> Tambah Data
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="section-body">
-                <h2 class="section-title">Logic Score "{{ $dataForm->title }}"</h2>
+                <h2 class="section-title">Logic Skor "{{ $dataForm->title }}"</h2>
                 <p class="section-lead">List logic untuk mendapatkan score dari input serta parameter output yang
                     ditargetkan.</p>
                 <div class="card">
@@ -42,7 +42,7 @@
                                         <th class="text-center" scope="col">#</th>
                                         <th class="text-center" scope="col">Input</th>
                                         <th class="text-center" scope="col">Parameter</th>
-                                        <th class="text-center" scope="col">Score</th>
+                                        <th class="text-center" scope="col">Skor</th>
                                         <th class="text-center" scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -78,12 +78,12 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <a class="btn btn-danger text-white delete-logic"
-                                                        data-href="{{ url('/') }}/set-score/logic/delete/{{ $list->id }}">
+                                                        data-href="{{ url('/') }}/kuesioner-skor/logic/delete/{{ $list->id }}">
                                                         <i class="fa fa-times"></i> Hapus
                                                     </a>
                                                     <button type="button" class="btn btn-warning text-white edit-logic"
                                                         data-toggle="modal" data-target="#editData"
-                                                        data-url={{ route('set-score.logic.edit', $list->id) }}>
+                                                        data-url={{ route('kuesioner-skor.logic.edit', $list->id) }}>
                                                         <i class="fa fa-edit"></i> Edit
                                                     </button>
                                                 </td>
@@ -106,7 +106,7 @@
 
 
     <!-- Modal -->
-    <form action="{{ route('set-score.logic.store') }}" method="POST">
+    <form action="{{ route('kuesioner-skor.logic.store') }}" method="POST">
         <div class="modal fade" id="tambahData" data-backdrop="static" role="dialog" data-keyboard="false"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -164,7 +164,7 @@
             </div>
         </div>
     </form>
-    <form action="{{ route('set-score.logic.update') }}" method="POST">
+    <form action="{{ route('kuesioner-skor.logic.update') }}" method="POST">
         <div class="modal fade" id="editData" data-backdrop="static" role="dialog" data-keyboard="false"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -210,11 +210,9 @@
 @push('scripts')
     <!-- JS Libraies -->
     <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <!-- Page Specific JS File -->
 
     <script>
-        // plugin
         $(document).ready(function() {
             $('.select2').select2({
                 // dropdownParent: $('#tambahData')
@@ -298,7 +296,7 @@
 
         $("#editData .paramTrig").change(function() {
             let id = $('#editData input[name="id"]').val();
-            let url = '/set-score/logic/edit/' + id;
+            let url = '/kuesioner-skor/logic/edit/' + id;
             var isChecked = $('#editData .paramTrig:checked').val() == 'true';
 
             $.get(url, function(data) {

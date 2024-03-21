@@ -131,7 +131,7 @@ class Form extends Model
 
     public function getShareUrlAttribute()
     {
-        return url('/forms/'.$this->slug);
+        return url('/forms/' . $this->slug);
     }
 
     public function getSubmissionsCountAttribute()
@@ -141,12 +141,12 @@ class Form extends Model
 
     public function getViewsCountAttribute()
     {
-        if(env('DB_CONNECTION') == 'pgsql') {
+        if (env('DB_CONNECTION') == 'pgsql') {
             return $this->views()->count() +
-            $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
-        } elseif(env('DB_CONNECTION') == 'mysql') {
+                $this->statistics()->sum(DB::raw("cast(data->>'views' as integer)"));
+        } elseif (env('DB_CONNECTION') == 'mysql') {
             return (int)($this->views()->count() +
-            $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
+                $this->statistics()->sum(DB::raw("json_extract(data, '$.views')")));
         }
         return 0;
     }
@@ -244,7 +244,7 @@ class Form extends Model
 
     public function score()
     {
-        return $this->hasOne(Score::class);
+        return $this->hasOne(Score::class)->where('status', 1);
     }
 
     /**
