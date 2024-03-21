@@ -33,6 +33,8 @@
                     ditargetkan.</p>
                 <div class="card">
                     <div class="card-body">
+                        <strong class="text-dark">Score {{ $score['sum'] }} / {{ $score['limit'] }} </strong>
+                        <hr>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hovered table-sm">
                                 <thead>

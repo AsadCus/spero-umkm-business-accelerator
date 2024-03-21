@@ -22,9 +22,7 @@
                                     <i class="fas fa-search"></i>
                                 </div>
                             </div>
-                            <input type="text"
-                                class="form-control"
-                                placeholder="Search">
+                            <input type="text" class="form-control" placeholder="Search">
                             <div class="input-group-append">
                                 <button class="btn btn-primary btn-lg">
                                     Search
@@ -34,7 +32,7 @@
                     </div>
                 </form>
                 <div class="mt-3">
-                    <a href="index.html">Back to Home</a>
+                    <a href="/dashboard">Back to Home</a>
                 </div>
             </div>
         </div>

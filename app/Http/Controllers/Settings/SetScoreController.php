@@ -30,11 +30,6 @@ class SetScoreController extends Controller
             });
         })->get();
 
-        // foreach ($this->score->get() as $keyForm => $listForm) {
-        //     $tes[] = $listForm->propertyScores;
-        // }
-        // dd($tes);
-
         return view('score.index-set', $d);
     }
 
@@ -52,10 +47,39 @@ class SetScoreController extends Controller
     public function show($id = null)
     {
         $score = $this->score->find($id);
-        if ($id =! null || $score == null) {
-            return view('404');
+        if ($id == null || $score == null) {
+            return view('pages.error-404');
         }
 
+        // limit score
+        foreach ($score->propertyScores as $keyPropertyScores => $listPropertyScores) {
+            $dataLogic[] = json_decode($listPropertyScores->logic);
+        }
+
+        $dataScore = [];
+        foreach ($dataLogic as $keyLogic => $listLogic) {
+            if (count($listLogic) > 1) {
+                $dataListScore = [];
+                foreach ($listLogic as $listLL) {
+                    $dataListScore[] = $listLL->score;
+                }
+                $dataScore[] = $dataListScore;
+            } else {
+                $dataScore[] = $listLogic[0]->score;
+            }
+        }
+
+        foreach ($dataScore as &$i) {
+            if (is_array($i)) {
+                $i = max($i);
+            }
+        }
+        unset($i);
+
+        $d['score'] = [
+            'sum' => array_sum($dataScore),
+            'limit' => $score->max_score
+        ];
         $d['dataForm'] = DB::table('forms')->where('id', $score->form_id)->first();
         $dataPropertyScore = $this->propertyScore->where('score_id', $id)->pluck('property_id')->toArray();
         $d['dataPropertyScore'] = $this->propertyScore->where('score_id', $id)->get();
@@ -87,7 +111,7 @@ class SetScoreController extends Controller
     public function delete($id = null)
     {
         if ($id == null) {
-            return view('404');
+            return view('pages.error-404');
         }
 
         DB::table('scores')->where('id', $id)->where('status', 1)
@@ -178,7 +202,7 @@ class SetScoreController extends Controller
     public function deleteScoreLogic($id = null)
     {
         if ($id == null) {
-            return view('404');
+            return view('pages.error-404');
         }
 
         $data = $this->propertyScore->find($id);
