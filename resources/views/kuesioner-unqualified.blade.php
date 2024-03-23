@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kuesioner unverif')
+@section('title', 'Kuesioner UnQualified')
 
 @push('style')
     <style>
@@ -17,9 +17,9 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1 style="width:87%">Kuesioner - Registered</h1>
+                <h1 style="width:85%">Kuesioner - UnQualified</h1>
                 <div class="float-right">
-                    <form action="/export-kuesioner-unverif" method="post" enctype="multipart/form-data">
+                    <form action="/export-kuesioner-unqualified" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" id="id_provinsi" name="id_prov">
                         <input type="hidden" id="id_kabupaten" name="id_kab">
@@ -30,9 +30,11 @@
                     </form>
                 </div>
             </div>
+
             <div class="section-body">
-                <h2 class="section-title">List Kuesioner - Registered</h2>
-                <p class="section-lead">List daftar responden yang sudah mengisi kuesioner dengan status unverif.</p>
+                <h2 class="section-title">List Kuesioner - UnQualified</h2>
+                <p class="section-lead">List daftar responden yang sudah mengisi kuesioner dengan score dibawah list
+                    qualified.</p>
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex mt-3">
@@ -64,41 +66,18 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped table-sm" id="table">
+                            <table class="table table-striped" id="table-x">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Nama</th>
-                                        <th scope="col">Nama Bisnis</th>
+                                        <th scope="col" style="width: 20%">Nama Bisnis</th>
                                         <th scope="col">Wilayah</th>
-                                        <th scope="col">Skor</th>
-                                        <th scope="col">Verifikasi</th>
-                                        <th scope="col">Submit?</th>
+                                        <th scope="col">Score</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-verif">
-                                    {{-- @forelse ($data as $key => $value)
-                                        <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>{{ $value->nama_usaha }}</td>
-                                            <td>{{ $value->name }}</td>
-                                            <td>{!! $value->savedSession == 1
-                                                ? '<span class="badge badge-warning badge-sm"><i class="fa fa-times"></i></span>'
-                                                : '<span class="badge badge-success badge-sm"><i class="fa fa-check"></i></span>' !!}</td>
-                                            <td>{{ $value->sumScore }}</td>
-                                            <td>{!! $value->savedSession == 0
-                                                ? '<a type="button" target="_blank" href="verif-page/' .
-                                                    $value->id .
-                                                    '/' .
-                                                    '" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a>'
-                                                : '' !!} </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="7">Tidak Ada Data</td>
-                                        </tr>
-                                    @endforelse --}}
                                 </tbody>
                             </table>
                         </div>
@@ -110,15 +89,31 @@
 @endsection
 
 @push('scripts')
-    <!-- Page Specific JS File -->
     <script src="{{ asset('library/datatables/media/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('js/page/modules-datatables.js') }}"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Page Specific JS File -->
+    <script src="{{ asset('js/page/modules-datatables.js') }}"></script>
     <script>
+        function filterData() {
+            let value = $(document).find('#date').val();
+            let value_second = $(document).find('#date_second').val();
+            window.location.href = "{{ url('/') }}/showPenjualan?date=" + value + "&date_second=" + value_second;
+        }
+
+        function exportData() {
+            let value = $(document).find('#date').val();
+            let value_second = $(document).find('#date_second').val();
+            const url = "{{ url('/') }}/exportPenjualan?date=" + value + "&date_second=" + value_second;
+            window.open(url, '_blank');
+        }
+
         $(document).ready(function() {
             $('.select2').select2();
 
-            var table = $('#table').DataTable({
+            var table = $('#table-x').DataTable({
                 processing: true,
                 ordering: false,
                 searching: true,
@@ -147,6 +142,19 @@
                                 data + '</label>'
                         }
                     },
+                    // {
+                    //     data: 'import',
+                    //     render: function(data) {
+                    //         if (data == 0) {
+                    //             var use =
+                    //                 '<span class="badge badge-dark"><i class="fa fa-desktop"></i>App</span>'
+                    //         } else {
+                    //             var use =
+                    //                 '<span class="badge badge-danger badge-sm"><iclass="fa-brands fa-google-plus-g"></i> form</span>'
+                    //         }
+                    //         return use;
+                    //     }
+                    // },
                     {
                         data: 'wilayah'
                     },
@@ -154,42 +162,15 @@
                         data: 'sumScore'
                     },
                     {
-                        data: 'qualify',
-                        render: function(data) {
-                            if (data == 1) {
-                                var use =
-                                    '<span class="badge badge-success badge-sm"><i class="fa fa-check"></i></span>'
-                            } else {
-                                var use =
-                                    '<span class="badge badge-warning badge-sm"><i class="fa fa-times"></i></span>'
-                            }
-                            return use;
-                        }
-                    },
-                    {
-                        data: 'savedSession',
-                        render: function(data) {
-                            if (data == 1) {
-                                var use =
-                                    '<span class="badge badge-warning badge-sm"><i class="fa fa-times"></i></span>'
-                            } else {
-                                var use =
-                                    '<span class="badge badge-success badge-sm"><i class="fa fa-check"></i></span>'
-                            }
-                            return use;
-                        }
-                    },
-                    {
-                        data: 'savedSession',
-                        render: function(data) {
-                            if (data == 0) {
-                                var use =
-                                    '<a type="button" target="_blank" href="verif-page/" class="btn btn-sm btn-primary"><i class="fa fa-sign-in"></i> Verif</a>'
-                            } else {
-                                var use = ''
-                            }
-                            return use;
-                        }
+                        data: null,
+                        render: function(data, row) {
+                            return `<a type="button" target="_blank" href="detail-data/${data.id}" class="btn btn-sm btn-dark"><i class="fa fa-search"></i></a>
+                            <button type="button" data-href="{{ url('/') }}/rollback-data/${data.id_user}" class="btn btn-sm btn-danger rollback"><i class="fa fa-reply"></i> UnVerif</button>`;
+                            // return `<a type="button" target="_blank" href="detail-data/${data.id}" class="btn btn-sm btn-dark"><i class="fa fa-search"></i></a>&nbsp;
+                        // <a class="btn btn-sm btn-primary" href="/preview-pdf/${data.id}"><i class="fas fa-file-pdf"></i></a>
+                        // <a class="btn btn-sm btn-success" href="/send-pdf/${data.id}"><i class="fas fa-paper-plane"></i></a>
+                        // <button type="button" data-href="{{ url('/') }}/rollback-data/${data.id_user}" class="btn btn-sm btn-danger rollback"><i class="fa fa-reply"></i> Rollback</button>`;
+                        },
                     },
                 ],
             });
@@ -277,27 +258,24 @@
             });
         });
 
-        $(document).on("click", ".doVerif", function() {
-            let name = $(this).attr('data-name');
-            let id = $(this).attr('data-id');
-            $('#modalVerif').find('.modal-title').html('Verifikasi User "' + name + '"');
-            $('#modalVerif').find('#id_user').val(id);
-            $('#modalVerif').modal('show');
-
+        $(document).on("click", ".rollback", function() {
+            let href = $(this).attr('data-href');
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Iya',
+                denyButtonText: `Tidak, kembali`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    Swal.fire('Data dirollback!', '', 'success')
+                    window.location.replace(href);
+                } else if (result.isDenied) {
+                    Swal.fire('Aksi rollback dibatalkan', '', 'info')
+                }
+            })
         });
-
-        function filterData() {
-            let value = $(document).find('#date').val();
-            let value_second = $(document).find('#date_second').val();
-            window.location.href = "{{ url('/') }}/showPenjualan?date=" + value + "&date_second=" + value_second;
-        }
-
-        function exportData() {
-            let value = $(document).find('#date').val();
-            let value_second = $(document).find('#date_second').val();
-            const url = "{{ url('/') }}/exportPenjualan?date=" + value + "&date_second=" + value_second;
-            window.open(url, '_blank');
-        }
     </script>
     <!-- Page Specific JS File -->
 @endpush

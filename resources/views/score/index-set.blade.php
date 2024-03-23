@@ -1,18 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Kuesioner Skor')
+@section('title', 'Kuesioner Score')
 
 @push('style')
     <style>
-        #data-table tbody tr td {
-            vertical-align: middle;
-        }
-
-        #data-table thead tr th {
-            vertical-align: middle;
+        tbody tr td,
+        thead tr th {
             text-align: center;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('library/datatables/media/css/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
 @endpush
 
 @section('main')
@@ -21,33 +19,34 @@
             <div class="section-header">
                 <h1 style="width:87%">Kuesioner Skor</h1>
                 <div class="float-right">
-                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambahData"><i
-                            class="fa fa-plus"></i> Tambah Data</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambahData">
+                        <i class="fa fa-plus"></i> Tambah Data
+                    </button>
                 </div>
             </div>
 
             <div class="section-body">
-                <h2 class="section-title">List Kuesioner Skor</h2>
-                <p class="section-lead">List daftar kuesioner yang terdapat sistem skor.</p>
+                <h2 class="section-title">List Kuesioner - Score</h2>
+                <p class="section-lead">List daftar kuesioner yang terdapat sistem Score.</p>
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped table-md">
+                            <table class="table table-striped table-sm" id="table">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" scope="col">#</th>
-                                        <th class="text-center" scope="col">Kuesioner</th>
-                                        <th class="text-center" scope="col">Skor Limit</th>
-                                        <th class="text-center" scope="col">Aksi</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Kuesioner</th>
+                                        <th scope="col">Score Limit</th>
+                                        <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($data as $key => $listData)
                                         <tr>
-                                            <td class="text-center">{{ $key + 1 }}</td>
-                                            <td class="text-center">{{ $listData->form->title }}</td>
-                                            <td class="text-center">{{ $listData->max_score }}</td>
-                                            <td class="text-center">
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $listData->form->title }}</td>
+                                            <td>{{ $listData->max_score }}</td>
+                                            <td>
                                                 <a class="btn btn-dark btn-sm"
                                                     href="kuesioner-skor/show/{{ $listData->id }}">
                                                     <i class="fa fa-search"></i> Show
@@ -66,7 +65,7 @@
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr class="text-center">
+                                        <tr>
                                             <td colspan="4">Tidak Ada Data</td>
                                         </tr>
                                     @endforelse
@@ -86,7 +85,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="tambahDataLabel">Tambah Data Skor</h5>
+                        <h5 class="modal-title" id="tambahDataLabel">Tambah Data Score</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -109,7 +108,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="score" class="form-label">
-                                Max Skor
+                                Max Score
                                 <span class="text-danger text-bold">*</span>
                             </label>
                             <input type="number" class="form-control" id="score" name="max_score"
@@ -159,11 +158,13 @@
 
 @push('scripts')
     <!-- JS Libraies -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
-    <!-- Page Specific JS File -->
+    <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('library/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/page/modules-datatables.js') }}"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
 
     <script>
+        $("#table").dataTable({});
         $(document).on("click", ".hapus-score", function() {
             let href = $(this).attr('data-href');
             Swal.fire({
@@ -189,4 +190,5 @@
             $('#editData').find('form').attr('action', 'kuesioner-skor/update/' + id);
         });
     </script>
+    <!-- Page Specific JS File -->
 @endpush

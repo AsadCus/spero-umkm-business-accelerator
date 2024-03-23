@@ -26,7 +26,7 @@ class SuperLoginController extends Controller
 
     public function index()
     {
-        return view('pages-umkm.auth-login');   
+        return view('pages-umkm.auth-login');
     }
 
     public function submitLogin(Request $request)
@@ -49,18 +49,18 @@ class SuperLoginController extends Controller
                     $request->session()->put('name', $this->guard()->user()->name);
                     $request->session()->put('id_user', $this->guard()->user()->id);
                     $request->session()->put('id_role', $this->guard()->user()->id_role);
-                    
+
                     if($this->guard()->user()->id_role == 2){
-                        return redirect()->route('/dashboard'); 
+                        return redirect()->route('/dashboard');
                     }else if ($this->guard()->user()->id_role == 4 or $this->guard()->user()->id_role == 3) {
-                        return redirect()->route('/kuesioner-unverif'); 
+                        return redirect()->route('/umkm-unverif');
                     }else{
-                        return redirect()->route('/list-materi'); 
+                        return redirect()->route('/list-materi');
                     }
                 }else{
                     return redirect('login');
                 }
-                
+
             }
         } catch (\Throwable $th) {
             $request->session()->flash('alert', [
@@ -68,10 +68,10 @@ class SuperLoginController extends Controller
                 'message' => 'Silahkan periksa kembali email password anda.',
             ]);
         }
-        
+
         return redirect('login');
     }
-    
+
     public function logout(Request $request)
     {
         Session::flush();

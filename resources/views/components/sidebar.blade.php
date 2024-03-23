@@ -22,41 +22,40 @@
                 </ul>
             </li>
             <li
-                class="dropdown {{ Request::is('kuesioner-unverif') || Request::is('umkm-qualified') || Request::is('umkm-unqualified') || Request::is('kuesioner-verif') ? 'active' : '' }}">
+                class="dropdown {{ Request::is('umkm-unverif') || Request::is('umkm-qualified') || Request::is('umkm-unqualified') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>UMKM</span></a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('kuesioner-unverif') ? 'active' : '' }}"><a class="nav-link"
-                            href="/kuesioner-unverif">UMKM Registered</a></li>
+                    <li class="{{ Request::is('umkm-unverif') ? 'active' : '' }}"><a class="nav-link"
+                            href="/umkm-unverif">UMKM Registered</a></li>
                     <li class="{{ Request::is('umkm-qualified') ? 'active' : '' }}"><a class="nav-link"
                             href="/umkm-qualified">UMKM Qualified</a></li>
                     <li class="{{ Request::is('umkm-unqualified') ? 'active' : '' }}"><a class="nav-link"
                             href="/umkm-unqualified">UMKM UnQualified</a></li>
-                    <li class="{{ Request::is('kuesioner-verif') ? 'active' : '' }}"><a class="nav-link"
-                            href="/kuesioner-verif">UMKM Verified</a></li>
-                </ul>
-            </li>
-            <li class="dropdown {{ Request::is('umkm-qualified') || Request::is('umkm-assesment') ? 'active' : '' }}">
-                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Kurasi
-                        UMKM</span></a>
-                <ul class="dropdown-menu">
-                    <li class="{{ Request::is('umkm-qualified') ? 'active' : '' }}"><a class="nav-link"
-                            href="/umkm-qualified">UMKM Qualified</a></li>
-                    <li class="{{ Request::is('umkm-assesment') ? 'active' : '' }}"><a class="nav-link"
-                            href="/umkm-assesment">UMKM Assesment</a></li>
                 </ul>
             </li>
             <li
-                class="dropdown {{ Request::is('user/admin') || Request::is('user/penyedia') || Request::is('user/kurator') || Request::is('user/umkm') ? 'active' : '' }}">
+                class="dropdown {{ Request::is('kurator/umkm-qualified') || Request::is('kurator/umkm-assesment') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Kurasi
+                        UMKM</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{{ Request::is('kurator/umkm-qualified') ? 'active' : '' }}"><a class="nav-link"
+                            href="/kurator/umkm-qualified">UMKM Qualified</a></li>
+                    <li class="{{ Request::is('kurator/umkm-assesment') ? 'active' : '' }}"><a class="nav-link"
+                            href="/kurator/umkm-assesment">UMKM Assesment</a></li>
+                </ul>
+            </li>
+            <li
+                class="dropdown {{ Request::is('akun/admin') || Request::is('akun/penyedia') || Request::is('akun/kurator') || Request::is('akun/umkm') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Management
                         Akun</span></a>
                 <ul class="dropdown-menu">
-                    <li class="{{ Request::is('user/admin') ? 'active' : '' }}"><a class="nav-link"
-                            href="/user/admin">Admin</a></li>
-                    <li class="{{ Request::is('user/penyedia') ? 'active' : '' }}"><a class="nav-link"
-                            href="/user/penyedia"> Penyedia</a></li>
-                    <li class="{{ Request::is('user/kurator') ? 'active' : '' }}"><a class="nav-link"
-                            href="/user/kurator"> Kurator</a></li>
-                    <li class="{{ Request::is('user/umkm') ? 'active' : '' }}"><a class="nav-link" href="/user/umkm">
+                    <li class="{{ Request::is('akun/admin') ? 'active' : '' }}"><a class="nav-link"
+                            href="/akun/admin">Admin</a></li>
+                    <li class="{{ Request::is('akun/penyedia') ? 'active' : '' }}"><a class="nav-link"
+                            href="/akun/penyedia"> Penyedia</a></li>
+                    <li class="{{ Request::is('akun/kurator') ? 'active' : '' }}"><a class="nav-link"
+                            href="/akun/kurator"> Kurator</a></li>
+                    <li class="{{ Request::is('akun/umkm') ? 'active' : '' }}"><a class="nav-link" href="/akun/umkm">
                             UMKM</a></li>
                 </ul>
             </li>

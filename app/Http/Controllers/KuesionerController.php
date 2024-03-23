@@ -13,19 +13,22 @@ use App\Models\Forms\Form;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use App\Models\ManagementSertifikat;
+use App\Models\PropertyScore;
+use App\Models\Score;
 use Illuminate\Database\Query\Builder;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Collection;
 
 class KuesionerController extends Controller
 {
-
     use AuthenticatesUsers;
 
-
-    public function __construct(Redirector $redirect, Form $form)
+    public function __construct(Redirector $redirect, Form $form, PropertyScore $propertyScore, Score $score)
     {
         $this->form = $form;
+        $this->score = $score;
+        $this->propertyScore = $propertyScore;
         // if (!$this->guard()->check() == false) {
         //     $redirect->to('/login')->send();
         // }
@@ -33,89 +36,8 @@ class KuesionerController extends Controller
 
     public function unVerif()
     {
-        $d['data'] = DB::table('form_submissions')
-            ->leftJoin('users', function ($join) {
-                $join->on('form_submissions.id_user', '=', 'users.id');
-            })
-            ->leftJoin('profil_user', function ($join) {
-                $join->on('form_submissions.id_user', '=', 'profil_user.id_user');
-            })
-            ->leftJoin('forms', function ($join) {
-                $join->on('form_submissions.form_id', '=', 'forms.id');
-            })
-            ->select('form_submissions.*', 'form_submissions.id as id_submit', 'users.name', 'users.final_level', 'profil_user.nama_usaha', 'profil_user.nama_usaha', 'forms.title')
-            ->where('users.aktif', 1)
-            ->where(function (Builder $query) {
-                $query->where('users.final_level', 0)
-                    ->orWhereNull('users.final_level');
-            })
-            ->whereNull('forms.deleted_at')
-            ->get();
-
-        if (count($d['data']) > 0) {
-            $form_id = $d['data'][0]->form_id;
-            $logic = DB::table('m_logic_level')->where('id_form', $form_id)->where('aktif', 1)->get();
-        } else {
-            $logic = '';
-            $level = '';
-        }
-
-        foreach ($d['data'] as $value) {
-            if ($logic != null or $logic != '') {
-                $arr_level = [];
-                $data_submission = json_decode($value->data, true);
-                if ($value->data == '{}') {
-                    continue;
-                }
-                foreach ($logic as $data_logic) {
-                    $arr_logic = json_decode($data_logic->logic, true);
-                    $expectedLevel = $data_logic->id_level;
-                    foreach ($arr_logic as $formula) {
-                        if ($formula['parameter'] == 'false') {
-                            if ($data_submission[$formula['input_id']] == null || $data_submission[$formula['input_id']] == '') {
-                                $arr_level[] = $expectedLevel;
-                            } else {
-                            }
-                        } elseif ($formula['parameter'] == 'true') {
-                            if ($data_submission[$formula['input_id']] != null || $data_submission[$formula['input_id']] != '') {
-                                if (array_key_exists("val-param", $formula)) {
-                                    if ($data_submission[$formula['input_id']] == $formula['val-param']) {
-                                        $arr_level[] = $expectedLevel;
-                                    }
-                                } else {
-                                    $arr_level[] = $expectedLevel;
-                                }
-                            } else {
-                            }
-                        } else {
-                        }
-                    }
-                }
-                $arr_level = array_unique($arr_level);
-                sort($arr_level);
-                if (in_array(1, $arr_level) && in_array(2, $arr_level) && in_array(3, $arr_level) && in_array(4, $arr_level)) {
-                    $level = 'Leader';
-                } elseif (in_array(1, $arr_level) && in_array(2, $arr_level) && in_array(3, $arr_level)) {
-                    $level = 'Adopter';
-                } elseif (in_array(1, $arr_level) && in_array(2, $arr_level)) {
-                    $level = 'Observer';
-                } elseif (in_array(1, $arr_level)) {
-                    $level = 'Beginner';
-                } else {
-                    $level = 'Novice';
-                }
-                // dd(in_array([1,2], $arr_level));
-            }
-            $value->id_level = implode(', ', $arr_level);
-            $value->level = $level;
-        }
-        return view('kuesioner-unverif', $d);
-    }
-
-    public function verif()
-    {
-
         if (request()->ajax()) {
+            $id_prov = request('id_prov');
             $id_kab = request('id_kab');
             $id_kec = request('id_kec');
             $id_kel = request('id_kel');
@@ -124,11 +46,13 @@ class KuesionerController extends Controller
                 ->leftJoin('users', 'form_submissions.id_user', '=', 'users.id')
                 ->leftJoin('profil_user', 'form_submissions.id_user', '=', 'profil_user.id_user')
                 ->leftJoin('forms', 'form_submissions.form_id', '=', 'forms.id')
-                ->leftJoin('m_level', 'm_level.id', '=', 'users.final_level')
-                ->select('form_submissions.*', 'users.name', 'users.id as id_user', 'users.final_level', 'profil_user.nama_usaha', 'profil_user.nama_usaha', 'forms.title', 'm_level.level', 'profil_user.id_kabupaten', 'profil_user.id_kecamatan', 'profil_user.id_keluarahan')
+                ->select('form_submissions.*', 'form_submissions.id as id_submit', 'users.name', 'users.verify', 'users.qualify', 'profil_user.nama_usaha', 'forms.title', 'profil_user.id_provinsi', 'profil_user.id_kabupaten', 'profil_user.id_kecamatan', 'profil_user.id_keluarahan')
                 ->where('users.aktif', 1)
-                ->where('users.final_level', '!=', 0)
                 ->whereNull('forms.deleted_at');
+
+            if ($id_prov) {
+                $query->where('profil_user.id_provinsi', $id_prov);
+            }
 
             if ($id_kab) {
                 $query->where('profil_user.id_kabupaten', $id_kab);
@@ -143,18 +67,129 @@ class KuesionerController extends Controller
             }
 
             $data = $query->get();
+            $data->map(function ($q) {
+                $provinsi = DB::table('m_provinsi')->select('nama_provinsi')->where('id_provinsi', $q->id_provinsi)->first();
+                return $q->wilayah = $provinsi->nama_provinsi;
+                return $q;
+            });
+            $this->getScore($data);
+
             return DataTables::of($data)->make(true);
         }
 
-        $d['kabupaten'] = DB::table('m_kabupaten')
-            ->select('id_kabupaten', 'nama_kabupaten')
+        $d['provinsi'] = DB::table('m_provinsi')
+            ->select('id_provinsi', 'nama_provinsi')
             ->where('aktif', 1)
             ->get();
-        return view('kuesioner-verif', $d);
+        return view('kuesioner-unverif', $d);
     }
 
+    public function qualified()
+    {
+        if (request()->ajax()) {
+            $id_prov = request('id_prov');
+            $id_kab = request('id_kab');
+            $id_kec = request('id_kec');
+            $id_kel = request('id_kel');
 
-    public function verification($id = null, $name = null)
+            $query = DB::table('form_submissions')
+                ->leftJoin('users', 'form_submissions.id_user', '=', 'users.id')
+                ->leftJoin('profil_user', 'form_submissions.id_user', '=', 'profil_user.id_user')
+                ->leftJoin('forms', 'form_submissions.form_id', '=', 'forms.id')
+                ->select('form_submissions.*', 'users.name', 'users.id as id_user', 'users.verify', 'users.qualify', 'profil_user.nama_usaha', 'forms.title', 'profil_user.id_provinsi', 'profil_user.id_kabupaten', 'profil_user.id_kecamatan', 'profil_user.id_keluarahan')
+                ->where('users.aktif', 1)
+                ->where('users.verify', '!=', 0)
+                ->whereNull('forms.deleted_at');
+
+            if ($id_prov) {
+                $query->where('profil_user.id_provinsi', $id_prov);
+            }
+
+            if ($id_kab) {
+                $query->where('profil_user.id_kabupaten', $id_kab);
+            }
+
+            if ($id_kec) {
+                $query->where('profil_user.id_kecamatan', $id_kec);
+            }
+
+            if ($id_kel) {
+                $query->where('profil_user.id_keluarahan', $id_kel);
+            }
+
+            $data = $query->get();
+            $data->map(function ($q) {
+                $provinsi = DB::table('m_provinsi')->select('nama_provinsi')->where('id_provinsi', $q->id_provinsi)->first();
+                return $q->wilayah = $provinsi->nama_provinsi;
+                return $q;
+            });
+            $this->getScore($data);
+
+            // dd($data);
+
+            return DataTables::of($data)->make(true);
+        }
+
+        $d['provinsi'] = DB::table('m_provinsi')
+            ->select('id_provinsi', 'nama_provinsi')
+            ->where('aktif', 1)
+            ->get();
+        return view('kuesioner-qualified', $d);
+    }
+
+    public function unqualified()
+    {
+        if (request()->ajax()) {
+            $id_prov = request('id_prov');
+            $id_kab = request('id_kab');
+            $id_kec = request('id_kec');
+            $id_kel = request('id_kel');
+
+            $query = DB::table('form_submissions')
+                ->leftJoin('users', 'form_submissions.id_user', '=', 'users.id')
+                ->leftJoin('profil_user', 'form_submissions.id_user', '=', 'profil_user.id_user')
+                ->leftJoin('forms', 'form_submissions.form_id', '=', 'forms.id')
+                ->select('form_submissions.*', 'users.name', 'users.id as id_user' , 'users.verify', 'users.qualify', 'profil_user.nama_usaha', 'forms.title', 'profil_user.id_provinsi', 'profil_user.id_kabupaten', 'profil_user.id_kecamatan', 'profil_user.id_keluarahan')
+                ->where('users.aktif', 1)
+                ->where('users.verify', '!=', 0)
+                ->where('users.qualify', '!=', 1)
+                ->whereNull('forms.deleted_at');
+
+            if ($id_prov) {
+                $query->where('profil_user.id_provinsi', $id_prov);
+            }
+
+            if ($id_kab) {
+                $query->where('profil_user.id_kabupaten', $id_kab);
+            }
+
+            if ($id_kec) {
+                $query->where('profil_user.id_kecamatan', $id_kec);
+            }
+
+            if ($id_kel) {
+                $query->where('profil_user.id_keluarahan', $id_kel);
+            }
+
+            $data = $query->get();
+            $data->map(function ($q) {
+                $provinsi = DB::table('m_provinsi')->select('nama_provinsi')->where('id_provinsi', $q->id_provinsi)->first();
+                return $q->wilayah = $provinsi->nama_provinsi;
+                return $q;
+            });
+            $this->getScore($data);
+
+            return DataTables::of($data)->make(true);
+        }
+
+        $d['provinsi'] = DB::table('m_provinsi')
+            ->select('id_provinsi', 'nama_provinsi')
+            ->where('aktif', 1)
+            ->get();
+        return view('kuesioner-unqualified', $d);
+    }
+
+    public function verification($id = null)
     {
         if ($id == null) {
             return view('404');
@@ -188,7 +223,7 @@ class KuesionerController extends Controller
                 'users.id as id_user',
                 'users.name',
                 'users.email',
-                'users.final_level',
+                'users.verify',
                 'profil_user.nama_usaha',
                 'forms.title',
                 'forms.properties',
@@ -205,15 +240,15 @@ class KuesionerController extends Controller
             )
             ->where('form_submissions.id', $id)
             ->where(function (Builder $query) {
-                $query->where('users.final_level', 0)
-                    ->orWhereNull('users.final_level');
+                $query->where('users.verify', 0)
+                    ->orWhereNull('users.verify');
             })
             ->whereNull('forms.deleted_at')
             ->first();
 
         $form = json_decode($d['data']->properties, true);
         $answer = json_decode($d['data']->data, true);
-        // dd($answer);
+
         $d['data']->html = '';
         $initTitle = 0;
         $initTable = 0;
@@ -261,24 +296,18 @@ class KuesionerController extends Controller
                 }
 
                 $d['data']->html .= '<tr><td style="width:65%; background: #fbfbfb; border: 1px solid #eee !important; font-weight:bold">' . $value['name'] . '</td><td style="width:35%;">' . $val . '</td></tr>';
-
-
                 if ($key == $len - 1) {
                     $d['data']->html .= '</table>';
                 }
             }
         }
 
-        if ($name == null) {
-            $d['data']->level = '';
-        } else {
-            $d['data']->level = base64_decode(urldecode($name));
-        }
+        $d['data']->score = $this->getScore($d['data']);
 
         return view('verification', $d);
     }
 
-    public function detailData($id = null, $name = null)
+    public function detailData($id = null)
     {
         if ($id == null) {
             return view('404');
@@ -312,7 +341,6 @@ class KuesionerController extends Controller
                 'users.id as id_user',
                 'users.name',
                 'users.email',
-                'users.final_level',
                 'profil_user.nama_usaha',
                 'forms.title',
                 'forms.properties',
@@ -333,7 +361,7 @@ class KuesionerController extends Controller
 
         $form = json_decode($d['data']->properties, true);
         $answer = json_decode($d['data']->data, true);
-        // dd($answer);
+
         $d['data']->html = '';
         $initTitle = 0;
         $initTable = 0;
@@ -366,7 +394,7 @@ class KuesionerController extends Controller
                     } else {
 
                         if ($value['type'] == 'checkbox') {
-                            // Checkbox
+
                             $val = $answer[$value['id']] == true ? '<span class="badge badge-xs badge-success"><i class="fa fa-check"></i></span>' : '<span class="badge badge-xs badge-danger"><i class="fa fa-times"></i></span>';
                         } elseif ($value['type'] == 'url') {
                             $val = "<a target='_blank' href='" . $answer[$value['id']] . "'>" . $answer[$value['id']] . "</a>";
@@ -393,24 +421,19 @@ class KuesionerController extends Controller
             }
         }
 
-        if ($name == null) {
-            $d['data']->level = '';
-        } else {
-            $d['data']->level = base64_decode(urldecode($name));
-        }
+        $d['data']->score = $this->getScore($d['data']);
 
         return view('detail-verif', $d);
     }
 
     public function doVerif(Request $request)
     {
-        // dd($request);
         $affected = DB::table('users')
             ->where('id', $request->id_user)
-            ->update(['final_level' => $request->level]);
+            ->update(['qualify' => 1]);
 
         if ($affected) {
-            return redirect('kuesioner-unverif');
+            return redirect('umkm-unverif');
         }
     }
 
@@ -543,9 +566,9 @@ class KuesionerController extends Controller
 
         $affected = DB::table('users')
             ->where('id', $id)
-            ->update(['final_level' => 0]);
+            ->update(['qualify' => 0]);
 
-        return redirect('kuesioner-verif');
+        return redirect('umkm-qualified');
     }
 
     public function exportKuesionerUnverif()
@@ -842,36 +865,47 @@ class KuesionerController extends Controller
 
     public function getKabupaten($id)
     {
+        $data = DB::table('m_kabupaten')
+            ->select('*')
+            ->where('id_provinsi', $id)
+            ->where('aktif', 1)
+            ->get();
+        return response()->json([
+            'kabupaten' => $data,
+        ]);
+    }
 
-        $kecamatan = DB::table('m_kecamatan')
+    public function getKecamatan($id)
+    {
+        $data = DB::table('m_kecamatan')
             ->select('*')
             ->where('id_kabupaten', $id)
             ->where('aktif', 1)
             ->get();
         return response()->json([
-            'kecamatan' => $kecamatan,
+            'kecamatan' => $data,
         ]);
     }
-    public function getKecamatan($id_kecamatan, $id_kab)
+
+    public function getKelurahan($id)
     {
 
-        $kelurahan = DB::table('m_kelurahan')
+        $data = DB::table('m_kelurahan')
             ->select('*')
-            ->where('id_kecamatan', $id_kecamatan)
+            ->where('id_kecamatan', $id)
             ->where('aktif', 1)
             ->get();
         return response()->json([
-            'kelurahan' => $kelurahan,
+            'kelurahan' => $data,
         ]);
     }
 
-    public function management_sertifikat()
+    public function managementSertifikat()
     {
         if (request()->ajax()) {
             $data = DB::table('management_sertifikats')
                 ->select('*')
                 ->get();
-
 
             return DataTables::of($data)->make(true);
         }
@@ -882,7 +916,6 @@ class KuesionerController extends Controller
     {
         try {
             DB::beginTransaction();
-
             $data = DB::table('management_sertifikats')
                 ->select('id', 'nama_pemilik', 'created_at')
                 ->whereIn('id', $request->id)
@@ -899,7 +932,6 @@ class KuesionerController extends Controller
                 // Simpan file PDF terpisah
                 $pdf->save(public_path('pdf/' . $filename));
             }
-
 
             ManagementSertifikat::where('status_pdf', 1)->whereIn('id', $request->id)->update(['status_pdf' => 0]);
 
@@ -919,7 +951,6 @@ class KuesionerController extends Controller
                 $response = asset($FileName);
                 // $response = response()->download(public_path($FileName));
                 // $response->deleteFileAfterSend(true);
-
             }
             DB::commit();
         } catch (Throwable $th) {
@@ -945,7 +976,6 @@ class KuesionerController extends Controller
             $filename = $d->nama_pemilik . '-' . $d->id . '.pdf';
             // Simpan file PDF terpisah
             $pdf->save(public_path('pdf/' . $filename));
-
             // diunduh
             DB::commit();
         } catch (Throwable $th) {
@@ -958,7 +988,6 @@ class KuesionerController extends Controller
 
     public function zipdownload(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -981,13 +1010,9 @@ class KuesionerController extends Controller
                 $filename = $nama_pemilik . '-' . $key->id . '.pdf';
                 DB::table('management_sertifikats')->where('id', $key->id)->update(['status_pdf' => 0]);
 
-
                 // Simpan file PDF terpisah
                 $pdf->save(public_path('pdf/' . $filename));
             }
-
-
-
 
             $zip = new ZipArchive;
             $FileName = 'Management-Sertifikat-' . date('H-i-s') . '.zip';
@@ -1009,6 +1034,93 @@ class KuesionerController extends Controller
             echo 'gagal mendwonload sertifikat';
         }
         return asset($FileName); // Kembalikan nama file ZIP
+    }
 
+    protected function getScore($data)
+    {
+        if ($data instanceof Collection) {
+            $data->map(function ($q) {
+                $score = $this->score->where([['form_id', $q->form_id], ['status', 1]])->first();
+                $propertyScoreData = $this->propertyScore->where('score_id', $score->id)->get();
+                $formData = json_decode($q->data, true);
+                $sum = 0;
+                foreach ($formData as $key => $value) {
+                    foreach ($propertyScoreData as $propertyScore) {
+                        if ($propertyScore->property_id === $key) {
+                            $arrLogic = json_decode($propertyScore->logic);
+                            foreach ($arrLogic as $listLogic) {
+                                if ($listLogic->parameter === "true") {
+                                    $parameter = true;
+                                } else {
+                                    $parameter = false;
+                                }
+
+                                if (property_exists($listLogic, 'name')) {
+                                    if ($parameter === true) {
+                                        if ($listLogic->name == $value) {
+                                            $sum += $listLogic->score;
+                                        }
+                                    }
+                                } else {
+                                    if ($value === true || $value === false) {
+                                        if ($listLogic->parameter == $value) {
+                                            $sum += $listLogic->score;
+                                        }
+                                    } else {
+                                        $valueParameter = $value !== null;
+                                        if ($parameter == $valueParameter) {
+                                            $sum += $listLogic->score;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $q->sumScore = $sum;
+                return $q;
+            });
+        } else {
+            $score = $this->score->where([['form_id', $data->form_id], ['status', 1]])->first();
+            $propertyScoreData = $this->propertyScore->where('score_id', $score->id)->get();
+            $formData = json_decode($data->data, true);
+            $sum = 0;
+            foreach ($formData as $key => $value) {
+                foreach ($propertyScoreData as $propertyScore) {
+                    if ($propertyScore->property_id === $key) {
+                        $arrLogic = json_decode($propertyScore->logic);
+                        foreach ($arrLogic as $listLogic) {
+                            if ($listLogic->parameter === "true") {
+                                $parameter = true;
+                            } else {
+                                $parameter = false;
+                            }
+
+                            if (property_exists($listLogic, 'name')) {
+                                if ($parameter === true) {
+                                    if ($listLogic->name == $value) {
+                                        $sum += $listLogic->score;
+                                    }
+                                }
+                            } else {
+                                if ($value === true || $value === false) {
+                                    if ($listLogic->parameter == $value) {
+                                        $sum += $listLogic->score;
+                                    }
+                                } else {
+                                    $valueParameter = $value !== null;
+                                    if ($parameter == $valueParameter) {
+                                        $sum += $listLogic->score;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            return $sum;
+        }
     }
 }

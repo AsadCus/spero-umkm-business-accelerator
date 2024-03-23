@@ -78,7 +78,7 @@ href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
   </div>
 
 <!-- Modal -->
-  <form action="{{route('/submit-verif')}}" method="POST">
+  <form action="{{route('submit-verif')}}" method="POST">
     @csrf
     <div class="modal fade" id="modalVerif" data-keyboard="false" aria-labelledby="tambahDataLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -114,7 +114,7 @@ href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
     </div>
   </form>
 @endsection
-   
+
 @push('scripts')
 <script src="{{ asset('library/datatables/media/js/jquery.dataTables.min.js') }}"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
@@ -137,7 +137,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css
       $('#modalVerif').find('.modal-title').html('Verifikasi User "' + name + '"');
       $('#modalVerif').find('#id_user').val(id);
       $('#modalVerif').modal('show');
-      
+
     });
 
     function filterData() {
@@ -156,7 +156,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css
     $(document).ready(function() {
       $('.select2').select2();
     });
-    
+
     $(document).on("click", ".rollback", function() {
         let href = $(this).attr('data-href');
         Swal.fire({
@@ -333,7 +333,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css
             ]
         });
 
-       
+
         function onChangeFilter(datatable) {
             if (datatable) {
                 datatable.draw();

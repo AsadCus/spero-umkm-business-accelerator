@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'List Admin')
+@section('title', 'List Kurator')
 @push('style')
     <style>
         tbody tr td,
@@ -14,14 +14,15 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1 style="width:85%">Management Admin</h1>
-                <a class="btn btn-success" href="/form-input-kelurahan">
+                <h1 style="width:85%">Management Kurator</h1>
+                {{-- <a class="btn btn-success" href="/user/kurator/create">
                     <i class="fa fa-plus"></i> Tambah Data
-                </a>
+                </a> --}}
             </div>
             <div class="section-body">
                 <div class="card">
-                    <div class="card-body"><strong class="text-dark">List Kelurahan </strong>
+                    <div class="card-body">
+                        <strong class="text-dark">List Kurator</strong>
                         <hr />
                         <div class="row">
                             <div class="col-12">
@@ -29,8 +30,10 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Kelurahan</th>
-                                            <th>Aksi</th>
+                                            <th>Nama</th>
+                                            <th>Email</th>
+                                            <th>Number</th>
+                                            {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -45,8 +48,8 @@
 @push('scripts')
     <script src="{{ asset('library/datatables/media/js/jquery.dataTables.min.js') }}"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
-    <script src="https: //cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
-    <link href="https: //cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="{{ asset('js/page/modules-datatables.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -62,21 +65,27 @@
                         },
                     },
                     {
-                        data: 'nama_kelurahan',
+                        data: 'name',
                     },
                     {
-                        data: null,
-                        render: function(data) {
-                            var deleteUrl = '/delete-kelurahan/' + data.id_kelurahan;
-                            var editUrl = '/form-edit-kelurahan/' + data.id_kelurahan;
-                            return `<form action="${deleteUrl}" method="POST" onsubmit="return confirm('Apakah anda yakin akan menghapus data ini ?');">
-                                    <span><a class="btn btn-sm btn-primary" href="${editUrl}"><i class="far fa-edit"></i></a></span>
-                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <input type="hidden" name="_method" value="PUT">
-                                    <button class="btn btn-sm btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
-                                    </form>`;
-                        },
+                        data: 'email',
                     },
+                    {
+                        data: 'no_wa',
+                    },
+                    // {
+                    //     data: null,
+                    //     render: function(data) {
+                    //         var deleteUrl = '/user/kurator/delete/' + data.id;
+                    //         var editUrl = '/user/kurator/edit/' + data.id;
+                    //         return `<form action="${deleteUrl}" method="POST" onsubmit="return confirm('Apakah anda yakin akan menghapus data ini ?');">
+                    //                 <span><a class="btn btn-sm btn-primary" href="${editUrl}"><i class="far fa-edit"></i></a></span>
+                    //                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    //                 <input type="hidden" name="_method" value="PUT">
+                    //                 <button class="btn btn-sm btn-danger" type="submit"><i class="far fa-trash-alt"></i></button>
+                    //                 </form>`;
+                    //     },
+                    // },
                 ],
             });
         });

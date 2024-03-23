@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\Settings\ScoreController;
 use App\Http\Controllers\Settings\SetScoreController;
 
@@ -38,6 +40,22 @@ Route::get('/delete-logic/{id}/{key}', [\App\Http\Controllers\SetLevelController
 Route::get('/set-logic/{id}', [\App\Http\Controllers\SetLevelController::class, 'setLogic'])->name("/set-logic/{id}");
 Route::post('/add-logic', [\App\Http\Controllers\SetLevelController::class, 'addLogic'])->name("/add-logic");
 
+// user
+Route::controller(UserController::class)->prefix('/akun')->name('akun')->group(function () {
+    Route::prefix('/admin')->name('admin')->group(function () {
+        Route::get('/', 'getUserAdmin')->name('index');
+    });
+    Route::prefix('/penyedia')->name('penyedia')->group(function () {
+        Route::get('/', 'getUserPenyedia')->name('index');
+    });
+    Route::prefix('/kurator')->name('kurator')->group(function () {
+        Route::get('/', 'getUserKurator')->name('index');
+    });
+    Route::prefix('/umkm')->name('umkm')->group(function () {
+        Route::get('/', 'getUserPeserta')->name('index');
+    });
+});
+
 // score
 Route::controller(ScoreController::class)->prefix('/score')->name('score.')->group(function () {
     Route::get('/', 'index')->name("index");
@@ -60,16 +78,31 @@ Route::controller(SetScoreController::class)->prefix('/kuesioner-skor')->name('k
     });
 });
 
-Route::get('/kuesioner-unverif', [\App\Http\Controllers\KuesionerController::class, 'unVerif'])->name("/kuesioner-unverif");
-Route::get('/kuesioner-all', [\App\Http\Controllers\KuesionerController::class, 'all'])->name("/kuesioner-all");
-Route::get('/kuesioner/{id}', [\App\Http\Controllers\KuesionerController::class, 'getKuesioner'])->name("/kuesioner/{id}");
-Route::get('/kuesioner-verif', [\App\Http\Controllers\KuesionerController::class, 'verif'])->name("/kuesioner-verif");
+Route::controller(KuesionerController::class)->group(function () {
+    Route::get('/umkm-unverif', 'unVerif')->name("umkm-unverif");
+    Route::get('/umkm-qualified', 'qualified')->name("umkm-qualified");
+    Route::get('/umkm-unqualified', 'unqualified')->name("umkm-unualified");
+    Route::get('/kuesioner-all', 'all')->name("kuesioner-all");
+    Route::get('/kuesioner/{id}', 'getKuesioner')->name("kuesioner");
+    Route::post('/submit-verif', 'doVerif')->name("submit-verif");
+    Route::get('/verif-page/{id}', 'verification')->name("verif-page");
+    Route::get('/detail-data/{id}', 'detailData')->name("detail-data");
+    Route::get('/rollback-data/{id}', 'rollback')->name("rollback-data");
+    Route::get('/export-data-unverif', 'exportKuesionerUnverif')->name("/export-data-unverif");
+    Route::post('/export-verif', 'exportKuesionerVerif')->name("/export-verif");
+    Route::get('/export-kuesioner/{id}', 'exportKuesioner')->name("/export-kuesioner/{id}");
+    Route::get('/regenerate-pdf/{id}', 'generate_ulang_pdf');
+    Route::get('/management-sertifikat', 'managementSertifikat');
+    Route::post('/all-generate-pdf', 'all_generate_pdf');
+    Route::get('/zipdownload', 'zipdownload');
+
+    // wilayah
+    Route::get('/get-kabupaten/{id}', 'getKabupaten');
+    Route::get('/get-kecamatan/{id}', 'getKecamatan');
+    Route::get('/get-kelurahan/{id}', 'getKelurahan');
+});
 
 Route::get('/logout', [\App\Http\Controllers\SuperLoginController::class, 'logout'])->name("logout");
-Route::post('/submit-verif', [\App\Http\Controllers\KuesionerController::class, 'doVerif'])->name("/submit-verif");
-Route::get('/verif-page/{id}/{level}', [\App\Http\Controllers\KuesionerController::class, 'verification'])->name("verif-page/{id}/{level}");
-Route::get('/detail-data/{id}/{level}', [\App\Http\Controllers\KuesionerController::class, 'detailData'])->name("detail-data/{id}/{level}");
-Route::get('/rollback-data/{id}', [\App\Http\Controllers\KuesionerController::class, 'rollback'])->name("rollback-data/{id}");
 Route::get('/import-data', [\App\Http\Controllers\ImportController::class, 'index'])->name("import-data");
 Route::post('/import', [\App\Http\Controllers\ImportController::class, 'importData'])->name("import");
 
@@ -102,22 +135,12 @@ Route::get('/materi-chatting/{id}/materi/{name}', [\App\Http\Controllers\LmsCont
 Route::get('/sub-materi-chatting/{id}', [\App\Http\Controllers\LmsController::class, 'sub_materi_chatting_by_id']);
 Route::get('/send-pdf/{id}', [\App\Http\Controllers\MailController::class, 'send'])->name("send-pdf");
 Route::post('/send-chatting', [\App\Http\Controllers\LmsController::class, 'send_chatting']);
-Route::get('/get-kabupaten/{id}', [\App\Http\Controllers\KuesionerController::class, 'getKabupaten']);
-Route::get('/get-kecamatan/{id_kecamatan}/{id_kab}', [\App\Http\Controllers\KuesionerController::class, 'getKecamatan']);
-Route::get('/get-kelurahan/{id_kelurahan}/{id_kab}/{id_kec}', [\App\Http\Controllers\KuesionerController::class, 'getKelurahan']);
 Route::post('/import-excel', [\App\Http\Controllers\ImportController::class, 'import_penerima_sertifikat']);
 
 // Route::get('/export-verif', [\App\Http\Controllers\KuesionerController::class, 'exportKuesionerVerif'])->name("export-verif");
 // });
 
-Route::get('/export-data-unverif', [\App\Http\Controllers\KuesionerController::class, 'exportKuesionerUnverif'])->name("/export-data-unverif");
-Route::post('/export-verif', [\App\Http\Controllers\KuesionerController::class, 'exportKuesionerVerif'])->name("/export-verif");
-Route::get('/export-kuesioner/{id}', [\App\Http\Controllers\KuesionerController::class, 'exportKuesioner'])->name("/export-kuesioner/{id}");
 Route::get('/preview-pdf/{id}', [\App\Http\Controllers\LmsController::class, 'downloadPdf']);
-Route::get('/regenerate-pdf/{id}', [\App\Http\Controllers\KuesionerController::class, 'generate_ulang_pdf']);
-Route::get('/management-sertifikat', [\App\Http\Controllers\KuesionerController::class, 'management_sertifikat']);
-Route::post('/all-generate-pdf', [\App\Http\Controllers\KuesionerController::class, 'all_generate_pdf']);
-Route::get('/zipdownload', [\App\Http\Controllers\KuesionerController::class, 'zipdownload']);
 
 // route wilayah
 Route::get('/provinsi', [\App\Http\Controllers\WilayahController::class, 'list_provinsi']);

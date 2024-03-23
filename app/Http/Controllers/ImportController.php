@@ -34,7 +34,7 @@ class ImportController extends Controller
                 $rows = $worksheet->toArray();
                 // dd($worksheet);
                 $headers = array_shift($rows);
-                
+
                 foreach ($rows as $row) {
                     if ($row[2] == null) {
                         continue;
@@ -54,7 +54,7 @@ class ImportController extends Controller
                     }elseif ($row[67] == 'NOVICE') {
                         $level = 5;
                     }else{
-                        $level = 0; 
+                        $level = 0;
                     }
                     $cekUser = DB::table('users')->where('email', $row[5])->first();
                     if ($cekUser == null) {
@@ -72,7 +72,7 @@ class ImportController extends Controller
                         $cekSubmission = DB::table('form_submissions')->where('id_user', $cekUser->id)->first();
                         DB::table('users')->where('id', $cekUser->id)
                         ->update(['final_level' => $level]);
-                        if($cekSubmission == null){ 
+                        if($cekSubmission == null){
                         }else{
                             continue;
                         }
@@ -110,7 +110,7 @@ class ImportController extends Controller
 
                     // Form Array Data Submission
                     $arrayData = json_encode($this->array_data($row, $arrPenghasilan, $arrWa));
-                    // dd($arrayData); 
+                    // dd($arrayData);
 
                     DB::table('form_submissions')->insert([
                         'id_user' => $id_user,
@@ -134,7 +134,7 @@ class ImportController extends Controller
             dd($th);
         }
 
-        return redirect('kuesioner-verif');
+        return redirect('umkm-verif');
     }
 
     function array_data($row, $arrPenghasilan, $arrWa){
@@ -144,7 +144,7 @@ class ImportController extends Controller
         $trigPakaian = ($row[15] == 'Pakaian' ? true : false);
         $trigKerajinanKulit = ($row[15] == 'Kerajinan Kulit' ? true : false);
         $trigKerajinanTangan = ($row[15] == 'Kerajinan Tangan' ? true : false);
-        
+
         // kondisi memasukkan inputan pilihan dari atas
         $produkMakanan = ($trigMakanan == true ? $row[16] : null);
         $produkMinuman = ($trigMinuman == true ? $row[16] : null);
@@ -154,7 +154,7 @@ class ImportController extends Controller
 
         $pendapatan = ($row[17] != '' ? $arrPenghasilan[$row[17]] : null);
         $urlWebsite = ($row[23] == 'Ya' ? $row[24] : null);
-        
+
         $checkFacebook = (str_contains($row[26], 'Facebook') ? true : false);
         $checkInstagram = (str_contains($row[26], 'Instagram') ? true : false);
         $checkTiktok = (str_contains($row[26], 'Tiktok') ? true : false);
@@ -165,7 +165,7 @@ class ImportController extends Controller
         $checkBukalapak = (str_contains($row[29], 'Bukalapak') ? true : false);
         $checkLazada = (str_contains($row[29], 'Lazada') ? true : false);
         $checkBlibli = (str_contains($row[29], 'Blibli') ? true : false);
-        
+
         $checkQRIS = (str_contains($row[33], 'QRIS') ? true : false);
         $checkOvo = (str_contains($row[33], 'OVO') ? true : false);
         $checkGopay = (str_contains($row[33], 'GOPAY') ? true : false);
@@ -363,10 +363,10 @@ class ImportController extends Controller
             'file' => 'required|mimes:xlsx,xls',
         ]);
         $file = $request->file('file');
- 
+
         // Process the Excel file
         Excel::import(new ImportExcel, $file);
- 
+
         return redirect('management-sertifikat');
     }
 }

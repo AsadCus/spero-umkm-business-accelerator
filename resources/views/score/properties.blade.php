@@ -1,26 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'Setting Skor ' . $dataForm->title)
+@section('title', 'Setting Score ' . $dataForm->title)
 
 @push('style')
     <style>
-        #data-table tbody tr td {
-            vertical-align: middle;
-        }
-
-        #data-table thead tr th,
-        .table th {
-            vertical-align: middle !important;
+        tbody tr td,
+        thead tr th {
             text-align: center;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('library/datatables/media/css/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
 @endpush
 
 @section('main')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1 style="width:87%">Setting Input Skor "{{ $dataForm->title }}"</h1>
+                <h1 style="width:87%">Setting Input Score "{{ $dataForm->title }}"</h1>
                 <div class="float-right">
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambahData">
                         <i class="fa fa-plus"></i> Tambah Data
@@ -36,7 +33,7 @@
                         <strong class="text-dark">Score {{ $score['sum'] }} / {{ $score['limit'] }} </strong>
                         <hr>
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hovered table-sm">
+                            <table class="table table-striped table-bordered table-hovered table-sm" id="table">
                                 <thead>
                                     <tr>
                                         <th class="text-center" scope="col">#</th>
@@ -59,16 +56,19 @@
                                                         Empty
                                                     @endif
                                                 </td>
-                                                <td class="text-center">
+                                                <td>
                                                     @if (count($list->logic) > 0)
                                                         @if ($list->type == 'select')
-                                                            <select class="form-control">
+                                                            {{-- <select class="form-control">
                                                                 @foreach ($list->logic as $keyLogic => $listLogic)
                                                                     <option value="{{ $listLogic->score }}">
                                                                         {{ $listLogic->name }} - {{ $listLogic->score }}
                                                                     </option>
                                                                 @endforeach
-                                                            </select>
+                                                            </select> --}}
+                                                            @foreach ($list->logic as $keyLogic => $listLogic)
+                                                                <div>{{ $listLogic->name }} - {{ $listLogic->score }}</div>
+                                                            @endforeach
                                                         @else
                                                             {{ $list->logic[0]->score }}
                                                         @endif
@@ -146,9 +146,9 @@
                             <div id="parameterHelp" class="form-text"></div>
                         </div>
                         <div class="mb-3" id="score">
-                            <label for="scoreInput" class="form-label">Score :</label>
+                            <label class="form-label">Score :</label>
                             <br>
-                            <div id="scoreInput"></div>
+                            {{-- <div id="scoreInput"></div> --}}
                             <div id="scoreInputs"></div>
                             <small id="scoreHelp" class="form-text text-muted">Tidak diisi = 0.</small>
                         </div>
@@ -188,9 +188,9 @@
                             Tidak : <input type="radio" class="paramTrig" name="parameter" value="false">
                         </div>
                         <div class="mb-3" id="score">
-                            <label for="scoreInput" class="form-label">Score :</label>
+                            <label class="form-label">Score :</label>
                             <br>
-                            <div id="scoreInput"></div>
+                            {{-- <div id="scoreInput"></div> --}}
                             <div id="scoreInputs"></div>
                             <small id="scoreHelp" class="form-text text-muted">Tidak diisi = 0.</small>
                         </div>
@@ -210,9 +210,11 @@
 @push('scripts')
     <!-- JS Libraies -->
     <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
-    <!-- Page Specific JS File -->
-
+    <script src="{{ asset('library/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/page/modules-datatables.js') }}"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
     <script>
+        $("#table").dataTable({});
         $(document).ready(function() {
             $('.select2').select2({
                 // dropdownParent: $('#tambahData')
@@ -229,13 +231,12 @@
 
             if (hasSelectCondition) {
                 $('#tambahData #scoreInputs').empty();
-                $('#tambahData #scoreInput').empty();
                 let arrOption = formJson[$("#tambahData .select2 option:selected").attr('data-key')]['select'][
                     'options'
                 ];
                 if (arrOption.length > 0) {
                     arrOption.forEach(function(option, index) {
-                        let inputHtml =
+                        var inputHtml =
                             '<div class="input-group mb-3">' +
                             '<div class="input-group-prepend">' +
                             '<span class="input-group-text" id="basic-addon1">' + option.name +
@@ -248,9 +249,8 @@
                 }
             } else {
                 $('#tambahData #scoreInputs').empty();
-                $('#tambahData #scoreInput').empty();
-                let inputHtml = '<input type="number" class="form-control" name="score[]">';
-                $('#tambahData #scoreInput').append(inputHtml);
+                var inputHtml = '<input type="number" class="form-control" name="score[]">';
+                $('#tambahData #scoreInputs').append(inputHtml);
             }
         });
 
@@ -270,9 +270,8 @@
 
                 if (propertyScore.type == 'select') {
                     $('#editData #scoreInputs').empty();
-                    $('#editData #scoreInput').empty();
                     propertyScore.logic.forEach(function(option, index) {
-                        let inputHtml =
+                        var inputHtml =
                             '<div class="input-group mb-3">' +
                             '<div class="input-group-prepend">' +
                             '<span class="input-group-text" id="basic-addon1">' + option.name +
@@ -285,11 +284,10 @@
                     });
                 } else {
                     $('#editData #scoreInputs').empty();
-                    $('#editData #scoreInput').empty();
-                    let inputHtml =
+                    var inputHtml =
                         '<input type="number" class="form-control" name="score[]" value="' +
                         propertyScore.logic[0].score + '">';
-                    $('#editData #scoreInput').append(inputHtml);
+                    $('#editData #scoreInputs').append(inputHtml);
                 }
             })
         });
@@ -305,7 +303,6 @@
 
                 if (hasSelectCondition) {
                     $('#editData #scoreInputs').empty();
-                    $('#editData #scoreInput').empty();
                     propertyScore.logic.forEach(function(option, index) {
                         let inputHtml =
                             '<div class="input-group mb-3">' +
@@ -320,11 +317,10 @@
                     });
                 } else {
                     $('#editData #scoreInputs').empty();
-                    $('#editData #scoreInput').empty();
-                    let inputHtml =
-                        '<input type="number" class="form-control" name="score[]" value="' +
-                        propertyScore.logic[0].score + '">';
-                    $('#tambahData #scoreInput').append(inputHtml);
+                    var inputHtml =
+                        '<input type="number" class="form-control" name="score[]" value="' + propertyScore
+                        .logic[0].score + '">';
+                    $('#editData #scoreInputs').append(inputHtml);
                 }
             })
         });
@@ -350,4 +346,5 @@
             })
         });
     </script>
+    <!-- Page Specific JS File -->
 @endpush
